@@ -22,17 +22,17 @@ public class PawnsGenerator : MonoBehaviour
 
     void GenerateWhitePawns()
     {
-        for (var i = 0; i < boardSize && i < PawnRows; ++i)
+        for (var rowIndex = 0; rowIndex < boardSize && rowIndex < PawnRows; ++rowIndex)
         {
-            for (var j = 0; j < boardSize; ++j)
-                if ((i + j) % 2 != 0)
-                    GeneratePawn(i, j, WhiteMaterial);
+            for (var columnIndex = 0; columnIndex < boardSize; ++columnIndex)
+                if ((columnIndex + rowIndex) % 2 == 0)
+                    GeneratePawn(columnIndex, rowIndex, WhiteMaterial);
         }
     }
 
-    void GeneratePawn(int columnIndex, int tileIndex, Material material)
+    void GeneratePawn(int columnIndex, int rowIndex, Material material)
     {
-        Transform tileTransform = tileGetter.GetTile(columnIndex, tileIndex).transform;
+        Transform tileTransform = tileGetter.GetTile(columnIndex, rowIndex).transform;
         GameObject instantiatedPawn = Instantiate(Pawn, tileTransform.position, Pawn.transform.rotation, tileTransform);
         instantiatedPawn.transform.localScale *= GetComponent<TilesGenerator>().TileSize;
         instantiatedPawn.GetComponent<Renderer>().material = material;
@@ -40,12 +40,12 @@ public class PawnsGenerator : MonoBehaviour
 
     void GenerateBlackPawns()
     {
-        for (var i = boardSize - 1; i >= 0 && i >= boardSize - PawnRows; --i)
+        for (var rowIndex = boardSize - 1; rowIndex >= 0 && rowIndex >= boardSize - PawnRows; --rowIndex)
         {
-            for (var j = boardSize - 1; j >= 0; --j)
+            for (var columnIndex = boardSize - 1; columnIndex >= 0; --columnIndex)
             {
-                if ((i + j) % 2 != 0)
-                    GeneratePawn(i, j, BlackMaterial);
+                if ((rowIndex + columnIndex) % 2 == 0)
+                    GeneratePawn(columnIndex, rowIndex, BlackMaterial);
             }
         }
     }

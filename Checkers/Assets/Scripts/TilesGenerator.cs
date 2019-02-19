@@ -24,28 +24,29 @@ public class TilesGenerator : MonoBehaviour
 
     void CreateTileColumn(int columnIndex)
     {
-        GameObject TileColumn = new GameObject("TileColumn" + columnIndex);
-        TileColumn.transform.parent = this.gameObject.transform;
-        TileColumn.transform.position = Vector3.right * columnIndex * TileSize;
+        GameObject tileColumn = new GameObject("TileColumn" + columnIndex);
+        tileColumn.transform.parent = this.gameObject.transform;
+        tileColumn.transform.position = Vector3.right * columnIndex * TileSize;
     }
 
     void CreateTiles()
     {
-        for (var i = 0; i < BoardSize; ++i)
+        for (var columnIndex = 0; columnIndex < BoardSize; ++columnIndex)
         {
-            for (var j = 0; j < BoardSize; ++j)
-                CreateTile(i, j);
+            for (var rowIndex = 0; rowIndex < BoardSize; ++rowIndex)
+                CreateTile(columnIndex, rowIndex);
         }
     }
 
-    void CreateTile(int columnIndex, int tileIndex)
+    void CreateTile(int columnIndex, int rowIndex)
     {
-        var column = transform.GetChild(columnIndex);
-        GameObject instantiatedTile = Instantiate(Tile, column.position + Vector3.forward * tileIndex * TileSize,
-            Tile.transform.rotation, column);
-        instantiatedTile.name = "Tile" + tileIndex;
+        var columnTransform = transform.GetChild(columnIndex);
+        GameObject instantiatedTile = Instantiate(Tile,
+            columnTransform.position + Vector3.forward * rowIndex * TileSize, Tile.transform.rotation,
+            columnTransform);
+        instantiatedTile.name = "Tile" + rowIndex;
         instantiatedTile.transform.localScale *= TileSize;
         instantiatedTile.GetComponent<Renderer>().material =
-            (columnIndex + tileIndex) % 2 == 0 ? WhiteMaterial : BlackMaterial;
+            (columnIndex + rowIndex) % 2 != 0 ? WhiteMaterial : BlackMaterial;
     }
 }

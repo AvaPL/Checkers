@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 2892052534595773946}
   - component: {fileID: 1711466240240967098}
   - component: {fileID: 8335862819355304491}
-  - component: {fileID: 3571834275597054172}
+  - component: {fileID: 283341414068011630}
+  - component: {fileID: 752550517645056648}
   m_Layer: 0
   m_Name: Tile
   m_TagString: Untagged
@@ -78,7 +79,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!64 &3571834275597054172
+--- !u!64 &283341414068011630
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -92,3 +93,15 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 14
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &752550517645056648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6051462574515651861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d2fccc8beb889d42a4902ce1a2e8c34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

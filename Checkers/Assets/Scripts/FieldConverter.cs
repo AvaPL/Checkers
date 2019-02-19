@@ -2,6 +2,6 @@
 {
     public static int alphabeticToNumeric(char character)
     {
-        return character - 16;
+        return (int) char.GetNumericValue((char) (character - ('A' - '1')));
     }
 }

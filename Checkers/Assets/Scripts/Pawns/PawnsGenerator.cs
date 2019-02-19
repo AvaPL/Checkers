@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PawnsGenerator : MonoBehaviour
 {
@@ -12,7 +10,7 @@ public class PawnsGenerator : MonoBehaviour
     private TileGetter tileGetter;
     private int boardSize;
 
-    void Start()
+    private void Start()
     {
         tileGetter = GetComponent<TileGetter>();
         boardSize = GetComponent<TilesGenerator>().BoardSize;
@@ -20,7 +18,7 @@ public class PawnsGenerator : MonoBehaviour
         GenerateBlackPawns();
     }
 
-    void GenerateWhitePawns()
+    private void GenerateWhitePawns()
     {
         for (var rowIndex = 0; rowIndex < boardSize && rowIndex < PawnRows; ++rowIndex)
         {
@@ -30,7 +28,7 @@ public class PawnsGenerator : MonoBehaviour
         }
     }
 
-    void GeneratePawn(int columnIndex, int rowIndex, Material material)
+    private void GeneratePawn(int columnIndex, int rowIndex, Material material)
     {
         Transform tileTransform = tileGetter.GetTile(columnIndex, rowIndex).transform;
         GameObject instantiatedPawn = Instantiate(Pawn, tileTransform.position, Pawn.transform.rotation, tileTransform);
@@ -38,7 +36,7 @@ public class PawnsGenerator : MonoBehaviour
         instantiatedPawn.GetComponent<Renderer>().material = material;
     }
 
-    void GenerateBlackPawns()
+    private void GenerateBlackPawns()
     {
         for (var rowIndex = boardSize - 1; rowIndex >= 0 && rowIndex >= boardSize - PawnRows; --rowIndex)
         {

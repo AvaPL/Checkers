@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\Users\Damian\.Rider2018.3\system\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\Damian\.Rider2018.3\system\resharper-host\local\Transient\ReSharperHost\v183\SolutionCaches\_Checkers.-1362163783.00" t="ExcludeRecursive" />
+    <e p="C:\Users\Damian\Documents\Checkers\Checkers" t="IncludeRecursive">
+      <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
+      <e p="Assets" t="Include">
+        <e p="Scripts" t="Include">
+          <e p="Pawns" t="Include">
+            <e p="PawnsGenerator.cs" t="Include" />
+          </e>
+          <e p="Tiles" t="Include">
+            <e p="FieldConverter.cs" t="Include" />
+            <e p="TileClickDetector.cs" t="Include" />
+            <e p="TileGetter.cs" t="Include" />
+            <e p="TilesGenerator.cs" t="Include" />
+          </e>
+        </e>
+      </e>
+      <e p="Checkers.sln" t="IncludeFlat" />
+      <e p="Library" t="ExcludeRecursive" />
+      <e p="obj" t="ExcludeRecursive" />
+      <e p="packages" t="ExcludeRecursive" />
+      <e p="Temp" t="ExcludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+      </e>
+    </e>
+  </component>
+</project>

@@ -1,20 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2755e8fa-87a5-4fe3-967a-9a678cdba7c8" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Pawns.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Tiles.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/FieldConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Tiles/FieldConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/FieldConverter.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Tiles/FieldConverter.cs.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/PawnsGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Pawns/PawnsGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/PawnsGenerator.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Pawns/PawnsGenerator.cs.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/TileClickDetector.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Tiles/TileClickDetector.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/TileClickDetector.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Tiles/TileClickDetector.cs.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/TileGetter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Tiles/TileGetter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/TileGetter.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Tiles/TileGetter.cs.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/TilesGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Tiles/TilesGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/TilesGenerator.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Tiles/TilesGenerator.cs.meta" afterDir="false" />
-    </list>
+    <list default="true" id="2755e8fa-87a5-4fe3-967a-9a678cdba7c8" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,44 +10,13 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Assets/Scripts/Tiles/TilesGenerator.cs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <folding>
-                <marker date="1550604477017" expanded="true" signature="63:1552" ph="{...}" />
-                <marker date="1550604477017" expanded="true" signature="242:306" ph="{...}" />
-                <marker date="1550604477017" expanded="true" signature="344:433" ph="{...}" />
-                <marker date="1550604477017" expanded="true" signature="485:718" ph="{...}" />
-                <marker date="1550604477017" expanded="true" signature="750:976" ph="{...}" />
-                <marker date="1550604477017" expanded="true" signature="830:970" ph="{...}" />
-                <marker date="1550604477017" expanded="true" signature="1036:1550" ph="{...}" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Assets/Scripts/Tiles/TileGetter.cs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="115">
-              <caret line="5" column="5" lean-forward="true" selection-start-line="5" selection-start-column="5" selection-end-line="5" selection-end-column="5" />
-              <folding>
-                <marker date="1550604497068" expanded="true" signature="59:214" ph="{...}" />
-                <marker date="1550604497068" expanded="true" signature="122:212" ph="{...}" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Assets/Scripts/Tiles/TileClickDetector.cs">
+        <entry file="file://$PROJECT_DIR$/Assets/Scripts/Enums/PawnColors.cs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="115">
-              <caret line="5" column="5" lean-forward="true" selection-start-line="5" selection-start-column="5" selection-end-line="5" selection-end-column="5" />
+            <state relative-caret-position="92">
+              <caret line="4" column="1" lean-forward="true" selection-start-line="4" selection-start-column="1" selection-end-line="4" selection-end-column="1" />
               <folding>
-                <marker date="1550604536616" expanded="true" signature="66:288" ph="{...}" />
-                <marker date="1550604536616" expanded="true" signature="91:286" ph="{...}" />
+                <marker date="1550605885014" expanded="true" signature="22:47" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -74,6 +30,8 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Tiles/FieldConverter.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Tiles/TileClickDetector.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Enums/PawnColors.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Enums/PawnTiers.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Tiles/TilesGenerator.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Tiles/TileGetter.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Pawns/PawnsGenerator.cs" root0="FORCE_HIGHLIGHTING" />
@@ -85,6 +43,8 @@
         <option value="$PROJECT_DIR$/Assets/Scripts/Tiles/TilesGenerator.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Tiles/TileGetter.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Tiles/TileClickDetector.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Enums/PawnColors.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Enums/PawnTiers.cs" />
       </list>
     </option>
   </component>
@@ -111,10 +71,10 @@
         <option name="show-hidden-items" value="false" />
       </pane>
       <pane id="AssemblyExplorer" />
+      <pane id="FileSystemExplorer" />
       <pane id="SolutionExplorer">
         <option name="show-all-files" value="false" />
       </pane>
-      <pane id="FileSystemExplorer" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -163,11 +123,12 @@
       <updated>1550604227075</updated>
       <workItem from="1550604231876" duration="141000" />
       <workItem from="1550604392454" duration="154000" />
+      <workItem from="1550605703557" duration="184000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="295000" />
+    <option name="totallyTimeSpent" value="479000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -274,8 +235,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Assets/Scripts/Tiles/TileGetter.cs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="115">
-          <caret line="5" column="5" lean-forward="true" selection-start-line="5" selection-start-column="5" selection-end-line="5" selection-end-column="5" />
+        <state relative-caret-position="69">
+          <caret line="5" column="5" selection-start-line="5" selection-start-column="5" selection-end-line="5" selection-end-column="5" />
           <folding>
             <marker date="1550604497068" expanded="true" signature="59:214" ph="{...}" />
             <marker date="1550604497068" expanded="true" signature="122:212" ph="{...}" />
@@ -285,11 +246,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Assets/Scripts/Tiles/TileClickDetector.cs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="115">
-          <caret line="5" column="5" lean-forward="true" selection-start-line="5" selection-start-column="5" selection-end-line="5" selection-end-column="5" />
+        <state relative-caret-position="69">
+          <caret line="5" column="5" selection-start-line="5" selection-start-column="5" selection-end-line="5" selection-end-column="5" />
           <folding>
             <marker date="1550604536616" expanded="true" signature="66:288" ph="{...}" />
             <marker date="1550604536616" expanded="true" signature="91:286" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Assets/Scripts/Enums/PawnTiers.cs">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Assets/Scripts/Enums/PawnColors.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="92">
+          <caret line="4" column="1" lean-forward="true" selection-start-line="4" selection-start-column="1" selection-end-line="4" selection-end-column="1" />
+          <folding>
+            <marker date="1550605885014" expanded="true" signature="22:47" ph="{...}" />
           </folding>
         </state>
       </provider>

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class TilesGenerator : MonoBehaviour
 {
@@ -10,26 +8,26 @@ public class TilesGenerator : MonoBehaviour
     public Material WhiteMaterial;
     public Material BlackMaterial;
 
-    void Start()
+    private void Start()
     {
         CreateTileColumns();
         CreateTiles();
     }
 
-    void CreateTileColumns()
+    private void CreateTileColumns()
     {
         for (var i = 0; i < BoardSize; ++i)
             CreateTileColumn(i);
     }
 
-    void CreateTileColumn(int columnIndex)
+    private void CreateTileColumn(int columnIndex)
     {
         GameObject tileColumn = new GameObject("TileColumn" + columnIndex);
         tileColumn.transform.parent = this.gameObject.transform;
         tileColumn.transform.position = Vector3.right * columnIndex * TileSize;
     }
 
-    void CreateTiles()
+    private void CreateTiles()
     {
         for (var columnIndex = 0; columnIndex < BoardSize; ++columnIndex)
         {
@@ -38,7 +36,7 @@ public class TilesGenerator : MonoBehaviour
         }
     }
 
-    void CreateTile(int columnIndex, int rowIndex)
+    private void CreateTile(int columnIndex, int rowIndex)
     {
         var columnTransform = transform.GetChild(columnIndex);
         GameObject instantiatedTile = Instantiate(Tile,

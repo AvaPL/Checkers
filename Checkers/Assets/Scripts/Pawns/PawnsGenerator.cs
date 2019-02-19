@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PawnsGenerator : MonoBehaviour
 {
@@ -9,40 +7,40 @@ public class PawnsGenerator : MonoBehaviour
     public Material WhiteMaterial;
     public Material BlackMaterial;
 
-    private TileGetter tileGetter;
-    private int boardSize;
+    private TileGetter _tileGetter;
+    private int _boardSize;
 
-    void Start()
+    private void Start()
     {
-        tileGetter = GetComponent<TileGetter>();
-        boardSize = GetComponent<TilesGenerator>().BoardSize;
+        _tileGetter = GetComponent<TileGetter>();
+        _boardSize = GetComponent<TilesGenerator>().BoardSize;
         GenerateWhitePawns();
         GenerateBlackPawns();
     }
 
-    void GenerateWhitePawns()
+    private void GenerateWhitePawns()
     {
-        for (var rowIndex = 0; rowIndex < boardSize && rowIndex < PawnRows; ++rowIndex)
+        for (var rowIndex = 0; rowIndex < _boardSize && rowIndex < PawnRows; ++rowIndex)
         {
-            for (var columnIndex = 0; columnIndex < boardSize; ++columnIndex)
+            for (var columnIndex = 0; columnIndex < _boardSize; ++columnIndex)
                 if ((columnIndex + rowIndex) % 2 == 0)
                     GeneratePawn(columnIndex, rowIndex, WhiteMaterial);
         }
     }
 
-    void GeneratePawn(int columnIndex, int rowIndex, Material material)
+    private void GeneratePawn(int columnIndex, int rowIndex, Material material)
     {
-        Transform tileTransform = tileGetter.GetTile(columnIndex, rowIndex).transform;
+        Transform tileTransform = _tileGetter.GetTile(columnIndex, rowIndex).transform;
         GameObject instantiatedPawn = Instantiate(Pawn, tileTransform.position, Pawn.transform.rotation, tileTransform);
         instantiatedPawn.transform.localScale *= GetComponent<TilesGenerator>().TileSize;
         instantiatedPawn.GetComponent<Renderer>().material = material;
     }
 
-    void GenerateBlackPawns()
+    private void GenerateBlackPawns()
     {
-        for (var rowIndex = boardSize - 1; rowIndex >= 0 && rowIndex >= boardSize - PawnRows; --rowIndex)
+        for (var rowIndex = _boardSize - 1; rowIndex >= 0 && rowIndex >= _boardSize - PawnRows; --rowIndex)
         {
-            for (var columnIndex = boardSize - 1; columnIndex >= 0; --columnIndex)
+            for (var columnIndex = _boardSize - 1; columnIndex >= 0; --columnIndex)
             {
                 if ((rowIndex + columnIndex) % 2 == 0)
                     GeneratePawn(columnIndex, rowIndex, BlackMaterial);

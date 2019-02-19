@@ -6,8 +6,9 @@ public class TilesGenerator : MonoBehaviour
 {
     public float TileSize;
     public int BoardSize;
-    public GameObject WhiteTile;
-    public GameObject BlackTile;
+    public GameObject Tile;
+    public Material WhiteMaterial;
+    public Material BlackMaterial;
 
     void Start()
     {
@@ -23,27 +24,29 @@ public class TilesGenerator : MonoBehaviour
 
     void CreateTileColumn(int columnIndex)
     {
-        GameObject TileColumn = new GameObject("TileColumn" + columnIndex);
-        TileColumn.transform.parent = this.gameObject.transform;
-        TileColumn.transform.position = Vector3.right * columnIndex * TileSize;
+        GameObject tileColumn = new GameObject("TileColumn" + columnIndex);
+        tileColumn.transform.parent = this.gameObject.transform;
+        tileColumn.transform.position = Vector3.right * columnIndex * TileSize;
     }
 
     void CreateTiles()
     {
-        for (var i = 0; i < BoardSize; ++i)
+        for (var columnIndex = 0; columnIndex < BoardSize; ++columnIndex)
         {
-            for (var j = 0; j < BoardSize; ++j)
-                CreateTile(i, j);
+            for (var rowIndex = 0; rowIndex < BoardSize; ++rowIndex)
+                CreateTile(columnIndex, rowIndex);
         }
     }
 
-    void CreateTile(int columnIndex, int tileIndex)
+    void CreateTile(int columnIndex, int rowIndex)
     {
-        var currentChild = transform.GetChild(columnIndex);
-        GameObject tileToInstantiate = (columnIndex + tileIndex) % 2 == 0 ? WhiteTile : BlackTile;
-        GameObject instantiatedTile = Instantiate(tileToInstantiate,
-            currentChild.position + Vector3.forward * tileIndex * TileSize, tileToInstantiate.transform.rotation,
-            currentChild);
+        var columnTransform = transform.GetChild(columnIndex);
+        GameObject instantiatedTile = Instantiate(Tile,
+            columnTransform.position + Vector3.forward * rowIndex * TileSize, Tile.transform.rotation,
+            columnTransform);
+        instantiatedTile.name = "Tile" + rowIndex;
         instantiatedTile.transform.localScale *= TileSize;
+        instantiatedTile.GetComponent<Renderer>().material =
+            (columnIndex + rowIndex) % 2 != 0 ? WhiteMaterial : BlackMaterial;
     }
 }

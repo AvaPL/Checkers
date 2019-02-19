@@ -6,8 +6,9 @@ public class TilesGenerator : MonoBehaviour
 {
     public float TileSize;
     public int BoardSize;
-    public GameObject WhiteTile;
-    public GameObject BlackTile;
+    public GameObject Tile;
+    public Material WhiteMaterial;
+    public Material BlackMaterial;
 
     void Start()
     {
@@ -39,11 +40,12 @@ public class TilesGenerator : MonoBehaviour
 
     void CreateTile(int columnIndex, int tileIndex)
     {
-        var currentChild = transform.GetChild(columnIndex);
-        GameObject tileToInstantiate = (columnIndex + tileIndex) % 2 == 0 ? WhiteTile : BlackTile;
-        GameObject instantiatedTile = Instantiate(tileToInstantiate,
-            currentChild.position + Vector3.forward * tileIndex * TileSize, tileToInstantiate.transform.rotation,
-            currentChild);
+        var column = transform.GetChild(columnIndex);
+        GameObject instantiatedTile = Instantiate(Tile, column.position + Vector3.forward * tileIndex * TileSize,
+            Tile.transform.rotation, column);
+        instantiatedTile.name = "Tile" + tileIndex;
         instantiatedTile.transform.localScale *= TileSize;
+        instantiatedTile.GetComponent<Renderer>().material =
+            (columnIndex + tileIndex) % 2 == 0 ? WhiteMaterial : BlackMaterial;
     }
 }

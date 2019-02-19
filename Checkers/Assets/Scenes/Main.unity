@@ -294,10 +294,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TileSize: 1
   BoardSize: 8
-  WhiteTile: {fileID: 6596475749972817861, guid: 13dbbf7f9adb39340865d47f69bd6690,
-    type: 3}
-  BlackTile: {fileID: 2397829356684280426, guid: 0376b80e88ac79b4ca0cd10ea3f59b18,
-    type: 3}
+  Tile: {fileID: 6051462574515651861, guid: 275fcae406ec91044a66b3085e442dee, type: 3}
+  WhiteMaterial: {fileID: 2100000, guid: 7b49d50db8ea7cf43835feb0f1c46e49, type: 2}
+  BlackMaterial: {fileID: 2100000, guid: 4ce92e8b644f56549962aa12482c3f8e, type: 2}
 --- !u!4 &2074681159
 Transform:
   m_ObjectHideFlags: 0

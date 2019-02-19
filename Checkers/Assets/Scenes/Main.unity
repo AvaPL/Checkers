@@ -273,6 +273,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2074681159}
   - component: {fileID: 2074681158}
+  - component: {fileID: 2074681161}
+  - component: {fileID: 2074681160}
   m_Layer: 0
   m_Name: Tiles
   m_TagString: Untagged
@@ -311,3 +313,31 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2074681160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2074681157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14d32d825a310f3488164f4d89862d00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PawnRows: 3
+  Pawn: {fileID: 4108919098016160601, guid: 816efbe6b57956c4e98fd1bd48b187c6, type: 3}
+  WhiteMaterial: {fileID: 2100000, guid: 7b49d50db8ea7cf43835feb0f1c46e49, type: 2}
+  BlackMaterial: {fileID: 2100000, guid: 4ce92e8b644f56549962aa12482c3f8e, type: 2}
+--- !u!114 &2074681161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2074681157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e89baf8a353f75b478e3d8b20826d3eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

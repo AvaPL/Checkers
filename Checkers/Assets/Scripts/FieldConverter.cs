@@ -1,7 +1,7 @@
 ﻿public class FieldConverter
 {
-    public static int alphabeticToNumeric(char character)
+    public static int AlphabeticToNumeric(char character)
     {
-        return (int) char.GetNumericValue((char) (character - ('A' - '1')));
+        return character - 'A';
     }
 }

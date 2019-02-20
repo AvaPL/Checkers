@@ -2,7 +2,12 @@
 
 public class TileClickDetector : MonoBehaviour
 {
-    void OnMouseDown()
+    private void OnMouseDown()
+    {
+        LogTileIndex();
+    }
+
+    public void LogTileIndex()
     {
         int columnIndex = transform.parent.GetSiblingIndex();
         int rowIndex = transform.GetSiblingIndex();

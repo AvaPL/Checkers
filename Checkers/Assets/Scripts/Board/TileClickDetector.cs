@@ -2,15 +2,30 @@
 
 public class TileClickDetector : MonoBehaviour
 {
-    private void OnMouseDown()
+    private TileProperties tileProperties;
+    private PawnMover pawnMover;
+
+    private void Awake()
     {
-        LogTileIndex();
+        tileProperties = GetComponent<TileProperties>();
     }
 
-    public void LogTileIndex()
+    private void Start()
     {
-        int columnIndex = transform.parent.GetSiblingIndex();
-        int rowIndex = transform.GetSiblingIndex();
-        Debug.Log("Tile clicked: " + columnIndex + ", " + rowIndex);
+        pawnMover = GetComponentInParent<PawnMover>();
     }
+
+    public void ChildPawnClicked()
+    {
+        OnMouseDown();
+    }
+
+    private void OnMouseDown()
+    {
+        if (tileProperties.IsOccupied())
+            pawnMover.PawnClicked(tileProperties.GetPawn());
+        else
+            pawnMover.TileClicked(this.gameObject);
+    }
+
 }

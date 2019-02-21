@@ -4,6 +4,6 @@ public class PawnClickDetector : MonoBehaviour
 {
     private void OnMouseDown()
     {
-        GetComponentInParent<TileClickDetector>().LogTileIndex();
+        GetComponentInParent<TileClickDetector>().ChildPawnClicked();
     }
 }

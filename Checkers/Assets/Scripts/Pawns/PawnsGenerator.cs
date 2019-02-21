@@ -10,10 +10,14 @@ public class PawnsGenerator : MonoBehaviour
     private TileGetter tileGetter;
     private int boardSize;
 
-    private void Start()
+    private void Awake()
     {
         tileGetter = GetComponent<TileGetter>();
         boardSize = GetComponent<TilesGenerator>().BoardSize;
+    }
+
+    private void Start()
+    {
         GenerateWhitePawns();
         GenerateBlackPawns();
     }
@@ -32,7 +36,6 @@ public class PawnsGenerator : MonoBehaviour
     {
         Transform tileTransform = tileGetter.GetTile(columnIndex, rowIndex).transform;
         GameObject instantiatedPawn = Instantiate(Pawn, tileTransform.position, Pawn.transform.rotation, tileTransform);
-        instantiatedPawn.transform.localScale *= GetComponent<TilesGenerator>().TileSize;
         instantiatedPawn.GetComponent<Renderer>().material = material;
     }
 

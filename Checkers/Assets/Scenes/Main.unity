@@ -332,8 +332,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PawnRows: 3
   Pawn: {fileID: 6180183240850365872, guid: 8fc0791d34f8f174e9fa55d5ee4cf165, type: 3}
-  WhiteMaterial: {fileID: 2100000, guid: 7b49d50db8ea7cf43835feb0f1c46e49, type: 2}
-  BlackMaterial: {fileID: 2100000, guid: 4ce92e8b644f56549962aa12482c3f8e, type: 2}
+  WhiteMaterial: {fileID: 2100000, guid: d840e8779b7d706478dcecc118a48b90, type: 2}
+  BlackMaterial: {fileID: 2100000, guid: 1ba1adee8e87ec1428bade33f4e90c67, type: 2}
 --- !u!114 &2074681161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -372,6 +372,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Board
+      objectReference: {fileID: 0}
+    - target: {fileID: 5814978486111995785, guid: 86182d255b6534b46bcb2c1c7c790997,
+        type: 3}
+      propertyPath: Scale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5814978486111995785, guid: 86182d255b6534b46bcb2c1c7c790997,
+        type: 3}
+      propertyPath: BoardSize
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5814978486111995784, guid: 86182d255b6534b46bcb2c1c7c790997,
         type: 3}
@@ -427,16 +437,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5814978486111995785, guid: 86182d255b6534b46bcb2c1c7c790997,
-        type: 3}
-      propertyPath: Scale
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5814978486111995785, guid: 86182d255b6534b46bcb2c1c7c790997,
-        type: 3}
-      propertyPath: BoardSize
-      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 86182d255b6534b46bcb2c1c7c790997, type: 3}

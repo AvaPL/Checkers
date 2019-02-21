@@ -28,15 +28,17 @@ public class PawnsGenerator : MonoBehaviour
         {
             for (var columnIndex = 0; columnIndex < boardSize; ++columnIndex)
                 if ((columnIndex + rowIndex) % 2 == 0)
-                    GeneratePawn(columnIndex, rowIndex, WhiteMaterial);
+                    GeneratePawn(columnIndex, rowIndex, PawnColor.White);
         }
     }
 
-    private void GeneratePawn(int columnIndex, int rowIndex, Material material)
+    private void GeneratePawn(int columnIndex, int rowIndex, PawnColor pawnColor)
     {
         Transform tileTransform = tileGetter.GetTile(columnIndex, rowIndex).transform;
         GameObject instantiatedPawn = Instantiate(Pawn, tileTransform.position, Pawn.transform.rotation, tileTransform);
-        instantiatedPawn.GetComponent<Renderer>().material = material;
+        instantiatedPawn.GetComponent<Renderer>().material =
+            pawnColor == PawnColor.White ? WhiteMaterial : BlackMaterial;
+        instantiatedPawn.GetComponent<PawnProperties>().PawnColor = pawnColor;
     }
 
     private void GenerateBlackPawns()
@@ -44,10 +46,8 @@ public class PawnsGenerator : MonoBehaviour
         for (var rowIndex = boardSize - 1; rowIndex >= 0 && rowIndex >= boardSize - PawnRows; --rowIndex)
         {
             for (var columnIndex = boardSize - 1; columnIndex >= 0; --columnIndex)
-            {
                 if ((rowIndex + columnIndex) % 2 == 0)
-                    GeneratePawn(columnIndex, rowIndex, BlackMaterial);
-            }
+                    GeneratePawn(columnIndex, rowIndex, PawnColor.Black);
         }
     }
 }

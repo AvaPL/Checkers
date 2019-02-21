@@ -50,16 +50,21 @@ public class BorderGenerator : MonoBehaviour
 
     private void CreaterBorderLine()
     {
-        CreateCorner();
+        CreateCornerElement();
         for (var i = 0; i < boardSize; ++i)
             CreateBorderElement();
         RotateBy90Degrees();
     }
 
-    private void CreateCorner()
+    private void CreateCornerElement()
     {
-        GameObject instantiatedCorner = Instantiate(Corner, currentPosition,
-            Corner.transform.rotation * currentRotation, borderGameObject.transform);
+        CreateElement(Corner);
+    }
+
+    private void CreateElement(GameObject objectToCreate)
+    {
+        GameObject instantiatedCorner = Instantiate(objectToCreate, currentPosition,
+            objectToCreate.transform.rotation * currentRotation, borderGameObject.transform);
         instantiatedCorner.transform.localScale *= scale;
         IncrementCurrentPosition();
     }
@@ -71,10 +76,7 @@ public class BorderGenerator : MonoBehaviour
 
     private void CreateBorderElement()
     {
-        GameObject instantiatedBorder = Instantiate(Border, currentPosition,
-            Border.transform.rotation * currentRotation, borderGameObject.transform);
-        instantiatedBorder.transform.localScale *= scale;
-        IncrementCurrentPosition();
+        CreateElement(Border);
     }
 
     private void RotateBy90Degrees()

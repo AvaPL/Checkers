@@ -3,7 +3,8 @@ using UnityEngine;
 
 public class PawnMover : MonoBehaviour
 {
-    public float MovementSmoothing;
+    public float HorizontalMovementSmoothing;
+    public float VerticalMovementSmoothing;
     public float PositionDifferenceTolerance;
 
     private TileGetter tileGetter;
@@ -14,10 +15,12 @@ public class PawnMover : MonoBehaviour
     private TileIndex currentTileIndex;
     private TileIndex positionDifferenceInIndex;
     private GameObject potentialCapturePawn;
+    private float scale;
 
     private void Awake()
     {
         tileGetter = GetComponent<TileGetter>();
+        scale = GetComponent<TilesGenerator>().Scale;
     }
 
     public void PawnClicked(GameObject pawn)
@@ -95,20 +98,24 @@ public class PawnMover : MonoBehaviour
         lastClickedPawn.transform.SetParent(lastClickedTile.transform);
     }
 
-    IEnumerator AnimatePawnMove()
+    private IEnumerator AnimatePawnMove()
     {
         isPawnMoving = true;
-        var pawnTransform = lastClickedPawn.transform;
-        var targetTransform = lastClickedPawn.transform.parent;
-        while (Vector3.Distance(pawnTransform.position, targetTransform.position) > PositionDifferenceTolerance)
-        {
-            pawnTransform.position = Vector3.Lerp(pawnTransform.position, targetTransform.position,
-                MovementSmoothing * Time.deltaTime);
-            yield return null;
-        }
-
+        var targetPosition = lastClickedPawn.transform.parent.position;
+        yield return MoveHorizontal(targetPosition);
         UnselectPawn(); //TODO: Should be handled in turn changing class, leaving pawn selected is easier for multi-capturing.
         isPawnMoving = false;
+    }
+
+    private IEnumerator MoveHorizontal(Vector3 targetPosition)
+    {
+        var pawnTransform = lastClickedPawn.transform;
+        while (Vector3.Distance(pawnTransform.position, targetPosition) > PositionDifferenceTolerance)
+        {
+            pawnTransform.position = Vector3.Lerp(pawnTransform.position, targetPosition,
+                HorizontalMovementSmoothing * Time.deltaTime);
+            yield return null;
+        }
     }
 
     private bool IsCapturingMove()
@@ -155,14 +162,33 @@ public class PawnMover : MonoBehaviour
         StartCoroutine(AnimatePawnCapture());
     }
 
-    IEnumerator AnimatePawnCapture()
+    private IEnumerator AnimatePawnCapture()
     {
-        //TODO: Animate vertical movement.
-        Debug.Log("Pawn is moving up.");
-        yield return new WaitForSeconds(1);
-        yield return AnimatePawnMove();
-        Debug.Log("Pawn is moving down.");
-        yield return new WaitForSeconds(1);
+        isPawnMoving = true;
+        yield return DoCaptureMovement();
         Destroy(potentialCapturePawn);
+        UnselectPawn(); //TODO: Should be handled in turn changing class, leaving pawn selected is easier for multi-capturing.
+        isPawnMoving = false;
+    }
+
+    private IEnumerator DoCaptureMovement()
+    {
+        var targetPosition = lastClickedPawn.transform.position + Vector3.up * scale;
+        yield return MoveVertical(targetPosition);
+        targetPosition = lastClickedPawn.transform.parent.position + Vector3.up * scale;
+        yield return MoveHorizontal(targetPosition);
+        targetPosition = lastClickedPawn.transform.position - Vector3.up * scale;
+        yield return MoveVertical(targetPosition);
+    }
+
+    private IEnumerator MoveVertical(Vector3 targetPosition)
+    {
+        var pawnTransform = lastClickedPawn.transform;
+        while (Vector3.Distance(pawnTransform.position, targetPosition) > PositionDifferenceTolerance)
+        {
+            pawnTransform.position = Vector3.Lerp(pawnTransform.position, targetPosition,
+                VerticalMovementSmoothing * Time.deltaTime);
+            yield return null;
+        }
     }
 }

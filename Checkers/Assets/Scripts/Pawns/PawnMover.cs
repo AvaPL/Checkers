@@ -14,12 +14,32 @@ public class PawnMover : MonoBehaviour
     {
         Debug.Log("Tile clicked");
         lastClickedTile = tile;
-        if (CanPawnBeMoved())
+        if (CanPawnBeMoved() && IsValidMove())
             MovePawn();
     }
+
     private bool CanPawnBeMoved()
     {
         return lastClickedPawn != null && !isPawnMoving;
+    }
+
+    private bool IsValidMove()
+    {
+        var positionDifference = lastClickedTile.GetComponent<TileProperties>().GetTileIndex() -
+                                 lastClickedPawn.GetComponentInParent<TileProperties>().GetTileIndex();
+        var pawnProperties = lastClickedPawn.GetComponent<PawnProperties>();
+        if (pawnProperties.PawnColor == PawnColor.White)
+        {
+            Debug.Log("White position difference: " + positionDifference);
+            return Mathf.Approximately(Mathf.Abs(positionDifference.x), Mathf.Abs(positionDifference.y)) &&
+                   Mathf.Approximately(positionDifference.y, 1);
+        }
+        else
+        {
+            Debug.Log("Black position difference: " + positionDifference);
+            return Mathf.Approximately(Mathf.Abs(positionDifference.x), Mathf.Abs(positionDifference.y)) &&
+                   Mathf.Approximately(positionDifference.y, -1);
+        }
     }
 
     private void MovePawn()

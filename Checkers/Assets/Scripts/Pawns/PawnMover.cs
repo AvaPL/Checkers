@@ -6,46 +6,18 @@ public class PawnMover : MonoBehaviour
     public float MovementSmoothing;
     public float PositionDifferenceTolerance;
 
+    private TileGetter tileGetter;
     private GameObject lastClickedTile;
     private GameObject lastClickedPawn;
     private bool isPawnMoving;
+    private TileIndex targetTileIndex;
+    private TileIndex currentTileIndex;
+    private TileIndex positionDifferenceInIndex;
+    private GameObject potentialCapturePawn;
 
-    public void TileClicked(GameObject tile)
+    private void Awake()
     {
-        Debug.Log("Tile clicked");
-        lastClickedTile = tile;
-        if (CanPawnBeMoved() && IsValidMove())
-            MovePawn();
-    }
-
-    private bool CanPawnBeMoved()
-    {
-        return lastClickedPawn != null && !isPawnMoving;
-    }
-
-    private bool IsValidMove()
-    {
-        var positionDifference = lastClickedTile.GetComponent<TileProperties>().GetTileIndex() -
-                                 lastClickedPawn.GetComponentInParent<TileProperties>().GetTileIndex();
-        var pawnProperties = lastClickedPawn.GetComponent<PawnProperties>();
-        if (pawnProperties.PawnColor == PawnColor.White)
-        {
-            Debug.Log("White position difference: " + positionDifference);
-            return Mathf.Approximately(Mathf.Abs(positionDifference.x), Mathf.Abs(positionDifference.y)) &&
-                   Mathf.Approximately(positionDifference.y, 1);
-        }
-        else
-        {
-            Debug.Log("Black position difference: " + positionDifference);
-            return Mathf.Approximately(Mathf.Abs(positionDifference.x), Mathf.Abs(positionDifference.y)) &&
-                   Mathf.Approximately(positionDifference.y, -1);
-        }
-    }
-
-    private void MovePawn()
-    {
-        lastClickedPawn.transform.SetParent(lastClickedTile.transform);
-        StartCoroutine(AnimatePawnMove());
+        tileGetter = GetComponent<TileGetter>();
     }
 
     public void PawnClicked(GameObject pawn)
@@ -67,6 +39,62 @@ public class PawnMover : MonoBehaviour
         lastClickedPawn = null;
     }
 
+    public void TileClicked(GameObject tile)
+    {
+        Debug.Log("Tile clicked");
+        lastClickedTile = tile;
+        if (!CanPawnBeMoved())
+            return;
+        if (IsValidMove())
+            MovePawn();
+        else if (IsCapturingMove())
+            CapturePawn();
+    }
+
+    private bool CanPawnBeMoved()
+    {
+        return lastClickedPawn != null && !isPawnMoving;
+    }
+
+    private bool IsValidMove()
+    {
+        //TODO: Add king pawn movement.
+        SetIndexes();
+        if (!IsMoveDiagonal())
+            return false;
+        else
+            return positionDifferenceInIndex.Row == GetPawnRowMoveDirection();
+    }
+
+    private void SetIndexes()
+    {
+        targetTileIndex = lastClickedTile.GetComponent<TileProperties>().GetTileIndex();
+        currentTileIndex = lastClickedPawn.GetComponent<PawnProperties>().GetTileIndex();
+        positionDifferenceInIndex = targetTileIndex - currentTileIndex;
+    }
+
+    private bool IsMoveDiagonal()
+    {
+        return Mathf.Abs(positionDifferenceInIndex.Column) == Mathf.Abs(positionDifferenceInIndex.Row);
+    }
+
+    private int GetPawnRowMoveDirection()
+    {
+        var pawnProperties = lastClickedPawn.GetComponent<PawnProperties>();
+        return pawnProperties.PawnColor == PawnColor.White ? 1 : -1;
+    }
+
+    private void MovePawn()
+    {
+        ChangeMovedPawnParent();
+        StartCoroutine(AnimatePawnMove());
+    }
+
+    private void ChangeMovedPawnParent()
+    {
+        lastClickedPawn.transform.SetParent(lastClickedTile.transform);
+    }
+
     IEnumerator AnimatePawnMove()
     {
         isPawnMoving = true;
@@ -79,7 +107,62 @@ public class PawnMover : MonoBehaviour
             yield return null;
         }
 
-        UnselectPawn();
+        UnselectPawn(); //TODO: Should be handled in turn changing class, leaving pawn selected is easier for multi-capturing.
         isPawnMoving = false;
+    }
+
+    private bool IsCapturingMove()
+    {
+        //TODO: Add king pawn movement.
+        SetIndexes();
+        if (positionDifferenceInIndex.Row != 2 && positionDifferenceInIndex.Row != -2)
+            return false;
+        else
+            return IsOpponentsPawnOnMiddleTile();
+    }
+
+    private bool IsOpponentsPawnOnMiddleTile()
+    {
+        var middleTileProperties = GetMiddleTile().GetComponent<TileProperties>();
+        if (!middleTileProperties.IsOccupied())
+            return false;
+        potentialCapturePawn = middleTileProperties.GetPawn();
+        return IsPawnToCaptureDifferentColorThanLastClickedPawn();
+    }
+
+    private GameObject GetMiddleTile()
+    {
+        var moveDirectionInIndex = GetDiagonalMoveDirectionInIndex();
+        return tileGetter.GetTile(currentTileIndex + moveDirectionInIndex);
+    }
+
+    private TileIndex GetDiagonalMoveDirectionInIndex()
+    {
+        //Move direction means TileIndex with both values equal to +-1.
+        return new TileIndex(positionDifferenceInIndex.Column / Mathf.Abs(positionDifferenceInIndex.Column),
+            positionDifferenceInIndex.Row / Mathf.Abs(positionDifferenceInIndex.Row));
+    }
+
+    private bool IsPawnToCaptureDifferentColorThanLastClickedPawn()
+    {
+        return potentialCapturePawn.GetComponent<PawnProperties>().PawnColor !=
+               lastClickedPawn.GetComponent<PawnProperties>().PawnColor;
+    }
+
+    private void CapturePawn()
+    {
+        ChangeMovedPawnParent();
+        StartCoroutine(AnimatePawnCapture());
+    }
+
+    IEnumerator AnimatePawnCapture()
+    {
+        //TODO: Animate vertical movement.
+        Debug.Log("Pawn is moving up.");
+        yield return new WaitForSeconds(1);
+        yield return AnimatePawnMove();
+        Debug.Log("Pawn is moving down.");
+        yield return new WaitForSeconds(1);
+        Destroy(potentialCapturePawn);
     }
 }

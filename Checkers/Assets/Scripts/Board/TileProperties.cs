@@ -14,11 +14,8 @@ public class TileProperties : MonoBehaviour
         return GetComponentInChildren<PawnProperties>().gameObject;
     }
 
-    public Vector2 GetTileIndex()
+    public TileIndex GetTileIndex()
     {
-        Vector2 tileIndex;
-        tileIndex.x = transform.parent.GetSiblingIndex();
-        tileIndex.y = transform.GetSiblingIndex();
-        return tileIndex;
+        return new TileIndex(transform.parent.GetSiblingIndex(), transform.GetSiblingIndex());
     }
 }

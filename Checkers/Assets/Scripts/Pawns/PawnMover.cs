@@ -11,6 +11,7 @@ public class PawnMover : MonoBehaviour
     private GameObject lastClickedPawn;
     private PawnMoveValidator pawnMoveValidator;
     private CapturingMoveChecker capturingMoveChecker;
+    private PromotionChecker promotionChecker;
     private bool isPawnMoving;
     private float scale;
 
@@ -19,10 +20,12 @@ public class PawnMover : MonoBehaviour
         scale = GetComponent<TilesGenerator>().Scale;
         pawnMoveValidator = GetComponent<PawnMoveValidator>();
         capturingMoveChecker = GetComponent<CapturingMoveChecker>();
+        promotionChecker = GetComponent<PromotionChecker>();
     }
 
     public void PawnClicked(GameObject pawn)
     {
+        if (isPawnMoving) return;
         if (pawn != lastClickedPawn)
         {
             Debug.Log("Pawn selected.");
@@ -42,19 +45,15 @@ public class PawnMover : MonoBehaviour
 
     public void TileClicked(GameObject tile)
     {
+        if (isPawnMoving) return;
         Debug.Log("Tile clicked");
         lastClickedTile = tile;
-        if (!CanPawnBeMoved())
+        if (lastClickedPawn == null)
             return;
         if (MoveIsValidAndPawnCannotCapture())
             MovePawn();
         else if (pawnMoveValidator.IsCapturingMove(lastClickedPawn, lastClickedTile))
             CapturePawn();
-    }
-
-    private bool CanPawnBeMoved()
-    {
-        return lastClickedPawn != null && !isPawnMoving;
     }
 
     private bool MoveIsValidAndPawnCannotCapture()
@@ -79,6 +78,7 @@ public class PawnMover : MonoBehaviour
         isPawnMoving = true;
         var targetPosition = lastClickedPawn.transform.parent.position;
         yield return MoveHorizontal(targetPosition);
+        promotionChecker.CheckPromotion(lastClickedPawn);
         UnselectPawn(); //TODO: Should be handled in turn changing class, leaving pawn selected is easier for multi-capturing.
         isPawnMoving = false;
     }
@@ -105,6 +105,7 @@ public class PawnMover : MonoBehaviour
         isPawnMoving = true;
         yield return DoCaptureMovement();
         Destroy(pawnMoveValidator.GetPawnToCapture());
+        promotionChecker.CheckPromotion(lastClickedPawn);
         UnselectPawn(); //TODO: Should be handled in turn changing class, leaving pawn selected is easier for multi-capturing.
         isPawnMoving = false;
     }

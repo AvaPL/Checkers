@@ -1,6 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+
+//TODO: Add methods to check capturing moves for every pawn.
 
 public class CapturingMoveChecker : MonoBehaviour
 {

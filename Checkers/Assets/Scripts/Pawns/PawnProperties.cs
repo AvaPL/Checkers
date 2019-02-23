@@ -9,4 +9,10 @@ public class PawnProperties : MonoBehaviour
     {
         return GetComponentInParent<TileProperties>().GetTileIndex();
     }
+
+    public void PromoteToKing()
+    {
+        IsKing = true;
+        Debug.Log("Pawn promoted to king.");
+    }
 }

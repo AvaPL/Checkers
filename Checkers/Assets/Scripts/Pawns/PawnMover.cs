@@ -6,10 +6,11 @@ public class PawnMover : MonoBehaviour
     public float HorizontalMovementSmoothing;
     public float VerticalMovementSmoothing;
     public float PositionDifferenceTolerance;
-    
+
     private GameObject lastClickedTile;
     private GameObject lastClickedPawn;
     private PawnMoveValidator pawnMoveValidator;
+    private CapturingMoveChecker capturingMoveChecker;
     private bool isPawnMoving;
     private float scale;
 
@@ -17,6 +18,7 @@ public class PawnMover : MonoBehaviour
     {
         scale = GetComponent<TilesGenerator>().Scale;
         pawnMoveValidator = GetComponent<PawnMoveValidator>();
+        capturingMoveChecker = GetComponent<CapturingMoveChecker>();
     }
 
     public void PawnClicked(GameObject pawn)
@@ -44,7 +46,7 @@ public class PawnMover : MonoBehaviour
         lastClickedTile = tile;
         if (!CanPawnBeMoved())
             return;
-        if (pawnMoveValidator.IsValidMove(lastClickedPawn, lastClickedTile))
+        if (MoveIsValidAndPawnCannotCapture())
             MovePawn();
         else if (pawnMoveValidator.IsCapturingMove(lastClickedPawn, lastClickedTile))
             CapturePawn();
@@ -53,6 +55,12 @@ public class PawnMover : MonoBehaviour
     private bool CanPawnBeMoved()
     {
         return lastClickedPawn != null && !isPawnMoving;
+    }
+
+    private bool MoveIsValidAndPawnCannotCapture()
+    {
+        return pawnMoveValidator.IsValidMove(lastClickedPawn, lastClickedTile) &&
+               !capturingMoveChecker.PawnHasCapturingMove(lastClickedPawn);
     }
 
     private void MovePawn()

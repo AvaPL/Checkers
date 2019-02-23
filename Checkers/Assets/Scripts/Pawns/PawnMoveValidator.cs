@@ -17,9 +17,7 @@ public class PawnMoveValidator : MonoBehaviour
 
     public bool IsValidMove(GameObject pawnToCheck, GameObject targetTileToCheck)
     {
-        pawn = pawnToCheck;
-        targetTile = targetTileToCheck;
-        SetIndexes();
+        SetValues(pawnToCheck, targetTileToCheck);
         if (!IsMoveDiagonal() || IsTileOccupied(targetTileIndex))
             return false;
         if (!IsPawnKing())
@@ -28,8 +26,10 @@ public class PawnMoveValidator : MonoBehaviour
             return IsPathCollidingWithOtherPawns();
     }
 
-    private void SetIndexes()
+    private void SetValues(GameObject pawnToCheck, GameObject targetTileToCheck)
     {
+        pawn = pawnToCheck;
+        targetTile = targetTileToCheck;
         targetTileIndex = targetTile.GetComponent<TileProperties>().GetTileIndex();
         currentTileIndex = pawn.GetComponent<PawnProperties>().GetTileIndex();
         positionDifferenceInIndex = targetTileIndex - currentTileIndex;
@@ -77,10 +77,8 @@ public class PawnMoveValidator : MonoBehaviour
 
     public bool IsCapturingMove(GameObject pawnToCheck, GameObject targetTileToCheck)
     {
-        pawn = pawnToCheck;
-        targetTile = targetTileToCheck;
-        SetIndexes();
-        if (!IsMoveDiagonal())
+        SetValues(pawnToCheck, targetTileToCheck);
+        if (!IsMoveDiagonal() || IsTileOccupied(targetTileIndex))
             return false;
         return IsCapturePositionChangeValid() && IsOpponentsPawnOnOneBeforeTargetTile();
     }
@@ -110,7 +108,7 @@ public class PawnMoveValidator : MonoBehaviour
             checkedTileIndex += moveDirectionInIndex)
             if (IsTileOccupied(checkedTileIndex) && checkedTileIndex != targetTileIndex - moveDirectionInIndex)
                 return false;
-        return true;
+        return IsTileOccupied(targetTileIndex - moveDirectionInIndex);
     }
 
     private GameObject GetPotentialPawnToCapture()

@@ -20,9 +20,9 @@ public class PawnMoveValidator : MonoBehaviour
         pawn = pawnToCheck;
         targetTile = targetTileToCheck;
         SetIndexes();
-        if (!IsMoveDiagonal())
+        if (!IsMoveDiagonal() || IsTileOccupied(targetTileIndex))
             return false;
-        else if (!IsPawnKing())
+        if (!IsPawnKing())
             return positionDifferenceInIndex.Row == GetPawnRowMoveDirection();
         else
             return IsPathCollidingWithOtherPawns();

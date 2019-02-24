@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-//TODO: Add methods to check capturing moves for every pawn.
-
 public class CapturingMoveChecker : MonoBehaviour
 {
     private List<GameObject> whitePawns = new List<GameObject>();
@@ -31,6 +29,19 @@ public class CapturingMoveChecker : MonoBehaviour
         }
     }
 
+    public bool PawnsHaveCapturingMove(PawnColor pawnsColor)
+    {
+        var pawnsToCheck = pawnsColor == PawnColor.White ? whitePawns : blackPawns;
+        foreach (var pawn in pawnsToCheck)
+        {
+            if (pawn == null)
+                continue;
+            if (PawnHasCapturingMove(pawn))
+                return true;
+        }
+        return false;
+    }
+
     public bool PawnHasCapturingMove(GameObject pawn)
     {
         pawnToCheck = pawn;
@@ -40,7 +51,6 @@ public class CapturingMoveChecker : MonoBehaviour
         checkingDirectionInIndex = new TileIndex(-1, 1);
         if (HasCapturingMoveOnDiagonal(checkingDirectionInIndex))
             return true;
-        Debug.Log("Pawn does not have capturing move.");
         return false;
     }
 
@@ -49,14 +59,16 @@ public class CapturingMoveChecker : MonoBehaviour
         var tileIndexToCheck = GetFirstTileIndexToCheck(checkingDirectionInIndex);
         while (IsIndexValid(tileIndexToCheck))
         {
-            Debug.Log("Checking move to: " + tileIndexToCheck.Column + ", " + tileIndexToCheck.Row);
             var tileToCheck = tileGetter.GetTile(tileIndexToCheck);
             if (pawnMoveValidator.IsCapturingMove(pawnToCheck, tileToCheck))
+            {
+                Debug.Log("Detected capturing move to: " + tileIndexToCheck.Column + ", " + tileIndexToCheck.Row);
                 return true;
+            }
+
             tileIndexToCheck += checkingDirectionInIndex;
         }
-
-        Debug.Log("Checked for capturing move on diagonal.");
+        
         return false;
     }
 

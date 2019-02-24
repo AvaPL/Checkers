@@ -10,7 +10,7 @@ public class PawnProperties : MonoBehaviour
     public float PositionDifferenceTolerance;
     public GameObject Crown;
     public GameObject PromotionParticles;
-
+    
     public TileIndex GetTileIndex()
     {
         return GetComponentInParent<TileProperties>().GetTileIndex();

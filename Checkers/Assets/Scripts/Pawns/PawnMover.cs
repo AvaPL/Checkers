@@ -12,7 +12,9 @@ public class PawnMover : MonoBehaviour
     private PawnMoveValidator pawnMoveValidator;
     private CapturingMoveChecker capturingMoveChecker;
     private PromotionChecker promotionChecker;
+    private TurnHandler turnHandler;
     private bool isPawnMoving;
+    private bool isMoveMulticapturing;
     private float scale;
 
     private void Awake()
@@ -21,11 +23,14 @@ public class PawnMover : MonoBehaviour
         pawnMoveValidator = GetComponent<PawnMoveValidator>();
         capturingMoveChecker = GetComponent<CapturingMoveChecker>();
         promotionChecker = GetComponent<PromotionChecker>();
+        turnHandler = GetComponent<TurnHandler>();
     }
 
     public void PawnClicked(GameObject pawn)
     {
-        if (isPawnMoving) return;
+        if (!CanPawnBeSelected(pawn))
+            return;
+        //TODO: Add selected pawn highlight.
         if (pawn != lastClickedPawn)
         {
             Debug.Log("Pawn selected.");
@@ -34,32 +39,40 @@ public class PawnMover : MonoBehaviour
         else
         {
             Debug.Log("Pawn unselected.");
-            UnselectPawn();
+            lastClickedPawn = null;
         }
     }
 
-    private void UnselectPawn()
+    private bool CanPawnBeSelected(GameObject pawn)
     {
-        lastClickedPawn = null;
+        return !isPawnMoving && turnHandler.GetTurn() == GetPawnColor(pawn) && !isMoveMulticapturing;
+    }
+
+    private PawnColor GetPawnColor(GameObject pawn)
+    {
+        return pawn.GetComponent<PawnProperties>().PawnColor;
     }
 
     public void TileClicked(GameObject tile)
     {
+        //TODO: Add available moves highlight.
         if (isPawnMoving) return;
         Debug.Log("Tile clicked");
         lastClickedTile = tile;
         if (lastClickedPawn == null)
             return;
-        if (MoveIsValidAndPawnCannotCapture())
+        if (MoveIsValidAndNoncapturing())
             MovePawn();
         else if (pawnMoveValidator.IsCapturingMove(lastClickedPawn, lastClickedTile))
             CapturePawn();
     }
 
-    private bool MoveIsValidAndPawnCannotCapture()
+    private bool MoveIsValidAndNoncapturing()
     {
-        return pawnMoveValidator.IsValidMove(lastClickedPawn, lastClickedTile) &&
-               !capturingMoveChecker.PawnHasCapturingMove(lastClickedPawn);
+        PawnColor turn = turnHandler.GetTurn();
+        if (capturingMoveChecker.PawnsHaveCapturingMove(turn))
+            return false;
+        return pawnMoveValidator.IsValidMove(lastClickedPawn, lastClickedTile);
     }
 
     private void MovePawn()
@@ -79,8 +92,15 @@ public class PawnMover : MonoBehaviour
         var targetPosition = lastClickedPawn.transform.parent.position;
         yield return MoveHorizontal(targetPosition);
         promotionChecker.CheckPromotion(lastClickedPawn);
-        UnselectPawn(); //TODO: Should be handled in turn changing class, leaving pawn selected is easier for multi-capturing.
+        EndTurn();
         isPawnMoving = false;
+    }
+
+    private void EndTurn()
+    {
+        lastClickedPawn = null;
+        isMoveMulticapturing = false;
+        turnHandler.NextTurn();
     }
 
     private IEnumerator MoveHorizontal(Vector3 targetPosition)
@@ -104,10 +124,26 @@ public class PawnMover : MonoBehaviour
     {
         isPawnMoving = true;
         yield return DoCaptureMovement();
-        Destroy(pawnMoveValidator.GetPawnToCapture());
+        RemoveCapturedPawn();
+        yield return null; //Waiting additional frame for captured pawn destruction.
         promotionChecker.CheckPromotion(lastClickedPawn);
-        UnselectPawn(); //TODO: Should be handled in turn changing class, leaving pawn selected is easier for multi-capturing.
+        CheckForMulticapturingMove();
         isPawnMoving = false;
+    }
+
+    private void RemoveCapturedPawn()
+    {
+        GameObject pawnToCapture = pawnMoveValidator.GetPawnToCapture();
+        turnHandler.DecrementPawnCount(pawnToCapture);
+        Destroy(pawnToCapture);
+    }
+
+    private void CheckForMulticapturingMove()
+    {
+        if (capturingMoveChecker.PawnHasCapturingMove(lastClickedPawn))
+            isMoveMulticapturing = true;
+        else
+            EndTurn();
     }
 
     private IEnumerator DoCaptureMovement()

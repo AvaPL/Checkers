@@ -6,4 +6,9 @@ public class TileGetter : MonoBehaviour
     {
         return transform.GetChild(columnIndex).GetChild(rowIndex).gameObject;
     }
+
+    public GameObject GetTile(TileIndex tileIndex)
+    {
+        return transform.GetChild(tileIndex.Column).GetChild(tileIndex.Row).gameObject;
+    }
 }

@@ -10,7 +10,7 @@ public class PawnMover : MonoBehaviour
     private GameObject lastClickedTile;
     private GameObject lastClickedPawn;
     private PawnMoveValidator pawnMoveValidator;
-    private CapturingMoveChecker capturingMoveChecker;
+    private MoveChecker moveChecker;
     private PromotionChecker promotionChecker;
     private TurnHandler turnHandler;
     private bool isPawnMoving;
@@ -21,7 +21,7 @@ public class PawnMover : MonoBehaviour
     {
         scale = GetComponent<TilesGenerator>().Scale;
         pawnMoveValidator = GetComponent<PawnMoveValidator>();
-        capturingMoveChecker = GetComponent<CapturingMoveChecker>();
+        moveChecker = GetComponent<MoveChecker>();
         promotionChecker = GetComponent<PromotionChecker>();
         turnHandler = GetComponent<TurnHandler>();
     }
@@ -30,22 +30,45 @@ public class PawnMover : MonoBehaviour
     {
         if (!CanPawnBeSelected(pawn))
             return;
-        //TODO: Add selected pawn highlight.
         if (pawn != lastClickedPawn)
-        {
-            Debug.Log("Pawn selected.");
-            lastClickedPawn = pawn;
-        }
+            SelectPawn(pawn);
         else
-        {
-            Debug.Log("Pawn unselected.");
-            lastClickedPawn = null;
-        }
+            UnselectPawn();
     }
 
     private bool CanPawnBeSelected(GameObject pawn)
     {
-        return !isPawnMoving && turnHandler.GetTurn() == GetPawnColor(pawn) && !isMoveMulticapturing;
+        PawnColor turn = turnHandler.GetTurn();
+        if (isPawnMoving || turn != GetPawnColor(pawn) || isMoveMulticapturing ||
+            !moveChecker.PawnHasAnyMove(pawn)) return false;
+        if (moveChecker.PawnsHaveCapturingMove(turn) && !moveChecker.PawnHasCapturingMove(pawn)) return false;
+        return true;
+    }
+
+    private void SelectPawn(GameObject pawn)
+    {
+        Debug.Log("Pawn selected.");
+        if (lastClickedPawn != null)
+            UnselectPawn();
+        lastClickedPawn = pawn;
+        AddPawnSelection();
+    }
+
+    private void AddPawnSelection()
+    {
+        lastClickedPawn.GetComponent<PawnProperties>().AddPawnSelection();
+    }
+
+    private void UnselectPawn()
+    {
+        Debug.Log("Pawn unselected.");
+        RemoveLastClickedPawnSelection();
+        lastClickedPawn = null;
+    }
+
+    private void RemoveLastClickedPawnSelection()
+    {
+        lastClickedPawn.GetComponent<PawnProperties>().RemovePawnSelection();
     }
 
     private PawnColor GetPawnColor(GameObject pawn)
@@ -56,21 +79,23 @@ public class PawnMover : MonoBehaviour
     public void TileClicked(GameObject tile)
     {
         //TODO: Add available moves highlight.
-        if (isPawnMoving) return;
+        if (!CanTileBeClicked()) return;
         Debug.Log("Tile clicked");
         lastClickedTile = tile;
-        if (lastClickedPawn == null)
-            return;
-        if (MoveIsValidAndNoncapturing())
+        if (IsMoveNoncapturingAndValid())
             MovePawn();
-        else if (pawnMoveValidator.IsCapturingMove(lastClickedPawn, lastClickedTile))
+        else if (IsMoveCapturingAndValid())
             CapturePawn();
     }
 
-    private bool MoveIsValidAndNoncapturing()
+    private bool CanTileBeClicked()
     {
-        PawnColor turn = turnHandler.GetTurn();
-        if (capturingMoveChecker.PawnsHaveCapturingMove(turn))
+        return !isPawnMoving && lastClickedPawn != null;
+    }
+
+    private bool IsMoveNoncapturingAndValid()
+    {
+        if (moveChecker.PawnHasCapturingMove(lastClickedPawn))
             return false;
         return pawnMoveValidator.IsValidMove(lastClickedPawn, lastClickedTile);
     }
@@ -79,6 +104,7 @@ public class PawnMover : MonoBehaviour
     {
         ChangeMovedPawnParent();
         StartCoroutine(AnimatePawnMove());
+        RemoveLastClickedPawnSelection();
     }
 
     private void ChangeMovedPawnParent()
@@ -114,10 +140,16 @@ public class PawnMover : MonoBehaviour
         }
     }
 
+    private bool IsMoveCapturingAndValid()
+    {
+        return pawnMoveValidator.IsCapturingMove(lastClickedPawn, lastClickedTile);
+    }
+
     private void CapturePawn()
     {
         ChangeMovedPawnParent();
         StartCoroutine(AnimatePawnCapture());
+        RemoveLastClickedPawnSelection();
     }
 
     private IEnumerator AnimatePawnCapture()
@@ -127,7 +159,7 @@ public class PawnMover : MonoBehaviour
         RemoveCapturedPawn();
         yield return null; //Waiting additional frame for captured pawn destruction.
         promotionChecker.CheckPromotion(lastClickedPawn);
-        CheckForMulticapturingMove();
+        MulticaptureOrEndTurn();
         isPawnMoving = false;
     }
 
@@ -138,10 +170,13 @@ public class PawnMover : MonoBehaviour
         Destroy(pawnToCapture);
     }
 
-    private void CheckForMulticapturingMove()
+    private void MulticaptureOrEndTurn()
     {
-        if (capturingMoveChecker.PawnHasCapturingMove(lastClickedPawn))
+        if (moveChecker.PawnHasCapturingMove(lastClickedPawn))
+        {
             isMoveMulticapturing = true;
+            AddPawnSelection();
+        }
         else
             EndTurn();
     }

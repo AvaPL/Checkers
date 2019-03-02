@@ -10,7 +10,10 @@ public class PawnProperties : MonoBehaviour
     public float PositionDifferenceTolerance;
     public GameObject Crown;
     public GameObject PromotionParticles;
-    
+    public GameObject PawnSelection;
+
+    private GameObject activePawnSelection;
+
     public TileIndex GetTileIndex()
     {
         return GetComponentInParent<TileProperties>().GetTileIndex();
@@ -31,7 +34,7 @@ public class PawnProperties : MonoBehaviour
         Destroy(instantiatedParticles, particlesDuration * 5);
     }
 
-    IEnumerator AddCrown()
+    private IEnumerator AddCrown()
     {
         var crownTransform = Instantiate(Crown, transform).transform;
         Vector3 targetPosition = crownTransform.position + Vector3.up * CrownHeight;
@@ -41,5 +44,17 @@ public class PawnProperties : MonoBehaviour
                 CrownAppearanceSmoothing * Time.deltaTime);
             yield return null;
         }
+    }
+
+    public void AddPawnSelection()
+    {
+        if (activePawnSelection != null) return;
+        activePawnSelection = Instantiate(PawnSelection, transform);
+    }
+
+    public void RemovePawnSelection()
+    {
+        if (activePawnSelection != null)
+            Destroy(activePawnSelection);
     }
 }

@@ -4,6 +4,7 @@ public class TurnHandler : MonoBehaviour
 {
     public PawnColor StartingPawnColor;
     public TurnTextChanger TurnTextChanger;
+    public GameOverPanel GameOverPanel;
 
     private PawnColor turn;
     private int whitePawnCount;
@@ -40,19 +41,23 @@ public class TurnHandler : MonoBehaviour
 
     private void CheckVictory()
     {
-        //TODO: Add information in UI.
         if (whitePawnCount == 0)
-            Debug.Log("Black won.");
+            EndGame(PawnColor.Black);
         else if (blackPawnCount == 0)
-            Debug.Log("White won.");
+            EndGame(PawnColor.White);
+    }
+
+    private void EndGame(PawnColor winnerPawnColor)
+    {
+        GameOverPanel.gameObject.SetActive(true);
+        GameOverPanel.SetWinnerText(winnerPawnColor);
     }
 
     public void Forfeit()
     {
-        //TODO: Add information in UI.
         if (turn == PawnColor.White)
-            Debug.Log("Black won.");
+            EndGame(PawnColor.Black);
         else if (turn == PawnColor.Black)
-            Debug.Log("White won.");
+            EndGame(PawnColor.White);
     }
 }

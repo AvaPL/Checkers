@@ -15,6 +15,6 @@ public class TurnTextChanger : MonoBehaviour
     public void ChangeTurnText(PawnColor pawnColor)
     {
         turnText.text = pawnColor.ToString().ToUpper() + "'S TURN";
-        textAnimator.Play("TurnTextAnimation");
+        textAnimator.SetTrigger("NextTurn");
     }
 }

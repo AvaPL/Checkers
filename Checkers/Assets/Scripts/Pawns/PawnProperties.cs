@@ -37,9 +37,11 @@ public class PawnProperties : MonoBehaviour
     private IEnumerator AddCrown()
     {
         var crownTransform = Instantiate(Crown, transform).transform;
-        Vector3 targetPosition = crownTransform.position + Vector3.up * CrownHeight;
+        Vector3 targetPosition = transform.position + Vector3.up * CrownHeight;
         while (Vector3.Distance(crownTransform.position, targetPosition) > PositionDifferenceTolerance)
         {
+            //Upadting position prevents misplacing crown when player moves during promotion animation.
+            targetPosition = transform.position + Vector3.up * CrownHeight;
             crownTransform.position = Vector3.Lerp(crownTransform.position, targetPosition,
                 CrownAppearanceSmoothing * Time.deltaTime);
             yield return null;

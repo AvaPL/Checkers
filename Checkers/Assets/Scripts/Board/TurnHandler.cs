@@ -13,6 +13,10 @@ public class TurnHandler : MonoBehaviour
     private void Awake()
     {
         turn = StartingPawnColor;
+    }
+
+    private void Start()
+    {
         int boardSize = GetComponent<TilesGenerator>().BoardSize;
         int pawnRows = GetComponent<PawnsGenerator>().PawnRows;
         whitePawnCount = blackPawnCount = Mathf.CeilToInt(boardSize * pawnRows / 2f);

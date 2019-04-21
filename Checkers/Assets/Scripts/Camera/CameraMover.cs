@@ -8,6 +8,7 @@ public class CameraMover : MonoBehaviour
     public float MaxViewingAngle;
     public float RotationSmoothing;
     public float ScrollSmoothing;
+    public float InitialRotation;
     public GameObject Board;
 
     private int boardSize;
@@ -37,7 +38,7 @@ public class CameraMover : MonoBehaviour
 
     private void SetInitialRotation()
     {
-        localRotation.y = 90; //Mouse y axis is x axis in world space.
+        localRotation.y = InitialRotation; //Mouse y axis is x axis in world space.
         var initialRotation = Quaternion.Euler(localRotation.y, 0, 0);
         transform.parent.rotation = initialRotation;
     }

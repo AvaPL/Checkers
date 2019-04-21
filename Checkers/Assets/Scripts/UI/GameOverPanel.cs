@@ -1,10 +1,18 @@
 ﻿using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameOverPanel : MonoBehaviour
 {
     public GameObject Board;
     public TextMeshProUGUI WinnerText;
+
+    private Animator gameOverPanelAnimator;
+
+    private void Awake()
+    {
+        gameOverPanelAnimator = GetComponent<Animator>();
+    }
 
     public void SetWinnerText(PawnColor winnerPawnColor)
     {
@@ -18,12 +26,16 @@ public class GameOverPanel : MonoBehaviour
 
     public void ReturnToMenu()
     {
-        Debug.Log("Returning to menu");
+        gameOverPanelAnimator.SetTrigger("ReturnToMenu");
+    }
+
+    public void LoadMenuScene()
+    {
+        SceneManager.LoadScene("Menu", LoadSceneMode.Single);
     }
 
     public void ExitGame()
     {
-        Debug.Log("Exiting game");
         Application.Quit();
     }
 }

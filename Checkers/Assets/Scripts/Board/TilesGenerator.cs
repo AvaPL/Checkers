@@ -3,7 +3,7 @@
 public class TilesGenerator : MonoBehaviour
 {
     public float Scale;
-    public int BoardSize;
+    public int BoardSize { get; private set; }
     public GameObject Tile;
     public Material WhiteMaterial;
     public Material BlackMaterial;
@@ -12,6 +12,11 @@ public class TilesGenerator : MonoBehaviour
     {
         CreateTileColumns();
         CreateTiles();
+    }
+
+    private void Awake()
+    {
+        BoardSize = PlayerPrefs.GetInt("BoardSize");
     }
 
     private void CreateTileColumns()

@@ -15,11 +15,9 @@ public class PawnMover : MonoBehaviour
     private TurnHandler turnHandler;
     private bool isPawnMoving;
     private bool isMoveMulticapturing;
-    private float scale;
 
     private void Awake()
     {
-        scale = GetComponent<TilesGenerator>().Scale;
         pawnMoveValidator = GetComponent<PawnMoveValidator>();
         moveChecker = GetComponent<MoveChecker>();
         promotionChecker = GetComponent<PromotionChecker>();
@@ -183,11 +181,11 @@ public class PawnMover : MonoBehaviour
 
     private IEnumerator DoCaptureMovement()
     {
-        var targetPosition = lastClickedPawn.transform.position + Vector3.up * scale;
+        var targetPosition = lastClickedPawn.transform.position + Vector3.up;
         yield return MoveVertical(targetPosition);
-        targetPosition = lastClickedPawn.transform.parent.position + Vector3.up * scale;
+        targetPosition = lastClickedPawn.transform.parent.position + Vector3.up;
         yield return MoveHorizontal(targetPosition);
-        targetPosition = lastClickedPawn.transform.position - Vector3.up * scale;
+        targetPosition = lastClickedPawn.transform.position - Vector3.up;
         yield return MoveVertical(targetPosition);
     }
 

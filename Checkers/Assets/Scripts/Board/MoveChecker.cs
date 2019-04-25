@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class MoveChecker : MonoBehaviour
 {
-    private List<GameObject> whitePawns = new List<GameObject>();
-    private List<GameObject> blackPawns = new List<GameObject>();
+    private LinkedList<GameObject> whitePawns = new LinkedList<GameObject>();
+    private LinkedList<GameObject> blackPawns = new LinkedList<GameObject>();
     private int boardSize;
     private PawnMoveValidator pawnMoveValidator;
     private TileGetter tileGetter;
@@ -23,9 +23,9 @@ public class MoveChecker : MonoBehaviour
         foreach (var element in pawnsProperties)
         {
             if (element.PawnColor == PawnColor.White)
-                whitePawns.Add(element.gameObject);
+                whitePawns.AddLast(element.gameObject);
             else
-                blackPawns.Add(element.gameObject);
+                blackPawns.AddLast(element.gameObject);
         }
     }
 
@@ -121,5 +121,65 @@ public class MoveChecker : MonoBehaviour
     {
         var tileToCheck = tileGetter.GetTile(targetTileIndex);
         return pawnMoveValidator.IsValidMove(pawnToCheck, tileToCheck);
+    }
+
+    public LinkedList<TileIndex> GetPawnsNoncapturingMoves(GameObject pawn)
+    {
+        pawnToCheck = pawn;
+        LinkedList<TileIndex> result = new LinkedList<TileIndex>();
+        TileIndex checkingDirectionInIndex = new TileIndex(1, 1);
+        result.AppendRange(GetNoncapturingMovesOnDiagonal(checkingDirectionInIndex));
+        checkingDirectionInIndex = new TileIndex(-1, 1);
+        result.AppendRange(GetNoncapturingMovesOnDiagonal(checkingDirectionInIndex));
+        Debug.Log("Found " + result.Count + " noncapturing moves.");
+        return result;
+    }
+
+    private LinkedList<TileIndex> GetNoncapturingMovesOnDiagonal(TileIndex checkingDirectionInIndex)
+    {
+        LinkedList<TileIndex> result = new LinkedList<TileIndex>();
+        for (var tileIndexToCheck = GetFirstTileIndexToCheck(checkingDirectionInIndex);
+            IsIndexValid(tileIndexToCheck);
+            tileIndexToCheck += checkingDirectionInIndex)
+        {
+            var tileToCheck = tileGetter.GetTile(tileIndexToCheck);
+            if (IsMoveValid(tileIndexToCheck))
+            {
+                Debug.Log("Getting noncapturing move to: " + tileIndexToCheck.Column + ", " + tileIndexToCheck.Row);
+                result.AddLast(tileIndexToCheck);
+            }
+        }
+
+        return result;
+    }
+
+    public LinkedList<TileIndex> GetPawnsCapturingMoves(GameObject pawn)
+    {
+        pawnToCheck = pawn;
+        LinkedList<TileIndex> result = new LinkedList<TileIndex>();
+        TileIndex checkingDirectionInIndex = new TileIndex(1, 1);
+        result.AppendRange(GetCapturingMovesOnDiagonal(checkingDirectionInIndex));
+        checkingDirectionInIndex = new TileIndex(-1, 1);
+        result.AppendRange(GetCapturingMovesOnDiagonal(checkingDirectionInIndex));
+        Debug.Log("Found " + result.Count + " capturing moves.");
+        return result;
+    }
+
+    private LinkedList<TileIndex> GetCapturingMovesOnDiagonal(TileIndex checkingDirectionInIndex)
+    {
+        LinkedList<TileIndex> result = new LinkedList<TileIndex>();
+        for (var tileIndexToCheck = GetFirstTileIndexToCheck(checkingDirectionInIndex);
+            IsIndexValid(tileIndexToCheck);
+            tileIndexToCheck += checkingDirectionInIndex)
+        {
+            var tileToCheck = tileGetter.GetTile(tileIndexToCheck);
+            if (pawnMoveValidator.IsCapturingMove(pawnToCheck, tileToCheck))
+            {
+                Debug.Log("Getting capturing move to: " + tileIndexToCheck.Column + ", " + tileIndexToCheck.Row);
+                result.AddLast(tileIndexToCheck);
+            }
+        }
+
+        return result;
     }
 }

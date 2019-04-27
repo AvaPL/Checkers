@@ -4,7 +4,7 @@ public class PromotionChecker : MonoBehaviour
 {
     private int boardSize;
 
-    private void Awake()
+    private void Start()
     {
         boardSize = GetComponent<TilesGenerator>().BoardSize;
     }

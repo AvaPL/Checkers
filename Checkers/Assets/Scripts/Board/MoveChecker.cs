@@ -123,7 +123,7 @@ public class MoveChecker : MonoBehaviour
         return pawnMoveValidator.IsValidMove(pawnToCheck, tileToCheck);
     }
 
-    public LinkedList<TileIndex> GetPawnsNoncapturingMoves(GameObject pawn)
+    public LinkedList<TileIndex> GetPawnNoncapturingMoves(GameObject pawn)
     {
         pawnToCheck = pawn;
         LinkedList<TileIndex> result = new LinkedList<TileIndex>();
@@ -131,7 +131,6 @@ public class MoveChecker : MonoBehaviour
         result.AppendRange(GetNoncapturingMovesOnDiagonal(checkingDirectionInIndex));
         checkingDirectionInIndex = new TileIndex(-1, 1);
         result.AppendRange(GetNoncapturingMovesOnDiagonal(checkingDirectionInIndex));
-        Debug.Log("Found " + result.Count + " noncapturing moves.");
         return result;
     }
 
@@ -153,7 +152,7 @@ public class MoveChecker : MonoBehaviour
         return result;
     }
 
-    public LinkedList<TileIndex> GetPawnsCapturingMoves(GameObject pawn)
+    public LinkedList<TileIndex> GetPawnCapturingMoves(GameObject pawn)
     {
         pawnToCheck = pawn;
         LinkedList<TileIndex> result = new LinkedList<TileIndex>();
@@ -161,7 +160,6 @@ public class MoveChecker : MonoBehaviour
         result.AppendRange(GetCapturingMovesOnDiagonal(checkingDirectionInIndex));
         checkingDirectionInIndex = new TileIndex(-1, 1);
         result.AppendRange(GetCapturingMovesOnDiagonal(checkingDirectionInIndex));
-        Debug.Log("Found " + result.Count + " capturing moves.");
         return result;
     }
 

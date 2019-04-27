@@ -2,13 +2,13 @@
 
 public class TreeNode<T>
 {
-    public T Data { get; set; }
+    public T Value { get; set; }
     public TreeNode<T> Parent { get; private set; }
     public LinkedList<TreeNode<T>> Children { get; }
 
-    public TreeNode(T data)
+    public TreeNode(T value)
     {
-        Data = data;
+        Value = value;
         Children = new LinkedList<TreeNode<T>>();
     }
 

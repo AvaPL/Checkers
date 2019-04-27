@@ -161,24 +161,6 @@ public class PawnMover : MonoBehaviour
         isPawnMoving = false;
     }
 
-    private void RemoveCapturedPawn()
-    {
-        GameObject pawnToCapture = pawnMoveValidator.GetPawnToCapture();
-        turnHandler.DecrementPawnCount(pawnToCapture);
-        Destroy(pawnToCapture);
-    }
-
-    private void MulticaptureOrEndTurn()
-    {
-        if (moveChecker.PawnHasCapturingMove(lastClickedPawn))
-        {
-            isMoveMulticapturing = true;
-            AddPawnSelection();
-        }
-        else
-            EndTurn();
-    }
-
     private IEnumerator DoCaptureMovement()
     {
         var targetPosition = lastClickedPawn.transform.position + Vector3.up;
@@ -199,4 +181,23 @@ public class PawnMover : MonoBehaviour
             yield return null;
         }
     }
+
+    private void RemoveCapturedPawn()
+    {
+        GameObject pawnToCapture = pawnMoveValidator.GetPawnToCapture();
+        turnHandler.DecrementPawnCount(pawnToCapture);
+        Destroy(pawnToCapture);
+    }
+
+    private void MulticaptureOrEndTurn()
+    {
+        if (moveChecker.PawnHasCapturingMove(lastClickedPawn))
+        {
+            isMoveMulticapturing = true;
+            AddPawnSelection();
+        }
+        else
+            EndTurn();
+    }
+
 }

@@ -63,10 +63,7 @@ public class MoveChecker : MonoBehaviour
         {
             var tileToCheck = tileGetter.GetTile(tileIndexToCheck);
             if (pawnMoveValidator.IsCapturingMove(pawnToCheck, tileToCheck))
-            {
-                Debug.Log("Detected capturing move to: " + tileIndexToCheck.Column + ", " + tileIndexToCheck.Row);
                 return true;
-            }
         }
 
         return false;

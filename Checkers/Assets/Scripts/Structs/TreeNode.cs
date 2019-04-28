@@ -3,7 +3,6 @@
 public class TreeNode<T>
 {
     public T Value { get; set; }
-    public TreeNode<T> Parent { get; private set; }
     public LinkedList<TreeNode<T>> Children { get; }
 
     public TreeNode(T value)
@@ -14,7 +13,7 @@ public class TreeNode<T>
 
     public TreeNode<T> AddChild(T child)
     {
-        TreeNode<T> childNode = new TreeNode<T>(child) {Parent = this};
+        TreeNode<T> childNode = new TreeNode<T>(child);
         Children.AddLast(childNode);
         return childNode;
     }

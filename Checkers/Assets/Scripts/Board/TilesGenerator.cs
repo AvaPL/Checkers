@@ -28,7 +28,7 @@ public class TilesGenerator : MonoBehaviour
     {
         GameObject tileColumn = new GameObject("TileColumn" + columnIndex);
         tileColumn.transform.parent = this.gameObject.transform;
-        tileColumn.transform.position = Vector3.right * columnIndex;
+        tileColumn.transform.position = tileColumn.transform.parent.position + Vector3.right * columnIndex;
     }
 
     private void CreateTiles()

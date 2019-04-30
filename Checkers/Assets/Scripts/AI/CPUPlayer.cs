@@ -17,6 +17,7 @@ public class CPUPlayer : MonoBehaviour
 
     public void DoCPUMove()
     {
+        if (!MoveTreeBuilder.HasNextMove()) return;
         Move move = MoveTreeBuilder.ChooseNextCPUMove();
         Debug.Log("Doing CPU move from: " + move.From.Column + ", " + move.From.Row + " to " + move.To.Column + ", " +
                   move.To.Row);

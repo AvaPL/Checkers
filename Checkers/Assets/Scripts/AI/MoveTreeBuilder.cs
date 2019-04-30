@@ -153,6 +153,11 @@ public class MoveTreeBuilder : MonoBehaviour
                 FillMoveTree(moveTreeNode, depth - 1);
     }
 
+    public bool HasNextMove()
+    {
+        return moveTree.Children.Count > 0;
+    }
+
     public Move ChooseNextCPUMove()
     {
         Move move = ChooseRandomCPUMove(); //TODO: Change choosing random move to minimax algorithm.

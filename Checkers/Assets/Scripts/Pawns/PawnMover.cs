@@ -105,6 +105,20 @@ public class PawnMover : MonoBehaviour
         RemoveLastClickedPawnSelection();
     }
 
+    private void SendMoveToCPU()
+    {
+        if (!ShouldMoveBeSentToCPU()) return;
+        TileIndex fromIndex = lastClickedPawn.GetComponent<PawnProperties>().GetTileIndex();
+        TileIndex toIndex = lastClickedTile.GetComponent<TileProperties>().GetTileIndex();
+        cpuPlayer.DoPlayerMove(new Move(fromIndex, toIndex));
+    }
+
+    private bool ShouldMoveBeSentToCPU()
+    {
+        return cpuPlayer != null && cpuPlayer.gameObject.activeInHierarchy &&
+               GetPawnColor(lastClickedPawn) == PawnColor.White;
+    }
+
     private void ChangeMovedPawnParent()
     {
         lastClickedPawn.transform.SetParent(lastClickedTile.transform);
@@ -193,25 +207,22 @@ public class PawnMover : MonoBehaviour
     private void MulticaptureOrEndTurn()
     {
         if (moveChecker.PawnHasCapturingMove(lastClickedPawn))
-        {
-            isMoveMulticapturing = true;
-            AddPawnSelection();
-        }
+            Multicapture();
         else
             EndTurn();
     }
 
-    private void SendMoveToCPU()
+    private void Multicapture()
     {
-        if (!MoveShouldBeSentToCPU()) return;
-        TileIndex fromIndex = lastClickedPawn.GetComponent<PawnProperties>().GetTileIndex();
-        TileIndex toIndex = lastClickedTile.GetComponent<TileProperties>().GetTileIndex();
-        cpuPlayer.DoPlayerMove(new Move(fromIndex, toIndex));
+        isMoveMulticapturing = true;
+        AddPawnSelection();
+        if (IsMoveByCPUAndMulticapturing())
+            cpuPlayer.DoCPUMove();
     }
 
-    private bool MoveShouldBeSentToCPU()
+    private bool IsMoveByCPUAndMulticapturing()
     {
         return cpuPlayer != null && cpuPlayer.gameObject.activeInHierarchy &&
-               GetPawnColor(lastClickedPawn) == PawnColor.White;
+               GetPawnColor(lastClickedPawn) == PawnColor.Black;
     }
 }

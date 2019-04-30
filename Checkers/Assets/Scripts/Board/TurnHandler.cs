@@ -9,10 +9,13 @@ public class TurnHandler : MonoBehaviour
     private PawnColor turn;
     private int whitePawnCount;
     private int blackPawnCount;
+    private bool isGameVsCPU;
+    private CPUPlayer cpuPlayer;
 
     private void Awake()
     {
         turn = StartingPawnColor;
+        isGameVsCPU = PlayerPrefs.GetInt("VsCPU") == 1;
     }
 
     private void Start()
@@ -20,12 +23,15 @@ public class TurnHandler : MonoBehaviour
         int boardSize = GetComponent<TilesGenerator>().BoardSize;
         int pawnRows = GetComponent<PawnsGenerator>().PawnRows;
         whitePawnCount = blackPawnCount = Mathf.CeilToInt(boardSize * pawnRows / 2f);
+        cpuPlayer = GetComponent<CPUPlayer>();
     }
 
     public void NextTurn()
     {
         turn = turn == PawnColor.White ? PawnColor.Black : PawnColor.White;
         TurnTextChanger.ChangeTurnText(turn);
+        if (isGameVsCPU && turn == PawnColor.Black)
+            cpuPlayer.DoCPUMove();
     }
 
     public PawnColor GetTurn()

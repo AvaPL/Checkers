@@ -12,7 +12,6 @@ public class CameraMover : MonoBehaviour
     public GameObject Board;
 
     private int boardSize;
-    private float scale;
     private float minOffset;
     private float maxOffset;
     private float localOffeset;
@@ -22,14 +21,13 @@ public class CameraMover : MonoBehaviour
     {
         var tilesGenerator = Board.GetComponent<TilesGenerator>();
         boardSize = tilesGenerator.BoardSize;
-        scale = tilesGenerator.Scale;
         SetInitialPosition();
         SetInitialRotation();
     }
 
     private void SetInitialPosition()
     {
-        var initialOffset = boardSize * Mathf.Sqrt(2) * scale;
+        var initialOffset = boardSize * Mathf.Sqrt(2);
         localOffeset = initialOffset;
         minOffset = initialOffset / 10;
         maxOffset = initialOffset;

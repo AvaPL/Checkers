@@ -28,4 +28,9 @@ public class TileClickDetector : MonoBehaviour
             pawnMover.TileClicked(this.gameObject);
     }
 
+    public void ClickTile()
+    {
+        Debug.Log("Tile clicked from script: " + tileProperties.GetTileIndex().Column + ", " + tileProperties.GetTileIndex().Row);
+        OnMouseDown();
+    }
 }

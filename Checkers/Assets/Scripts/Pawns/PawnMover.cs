@@ -13,17 +13,17 @@ public class PawnMover : MonoBehaviour
     private MoveChecker moveChecker;
     private PromotionChecker promotionChecker;
     private TurnHandler turnHandler;
+    private CPUPlayer cpuPlayer;
     private bool isPawnMoving;
     private bool isMoveMulticapturing;
-    private float scale;
 
     private void Awake()
     {
-        scale = GetComponent<TilesGenerator>().Scale;
         pawnMoveValidator = GetComponent<PawnMoveValidator>();
         moveChecker = GetComponent<MoveChecker>();
         promotionChecker = GetComponent<PromotionChecker>();
         turnHandler = GetComponent<TurnHandler>();
+        cpuPlayer = GetComponent<CPUPlayer>();
     }
 
     public void PawnClicked(GameObject pawn)
@@ -47,7 +47,6 @@ public class PawnMover : MonoBehaviour
 
     private void SelectPawn(GameObject pawn)
     {
-        Debug.Log("Pawn selected.");
         if (lastClickedPawn != null)
             UnselectPawn();
         lastClickedPawn = pawn;
@@ -61,7 +60,6 @@ public class PawnMover : MonoBehaviour
 
     private void UnselectPawn()
     {
-        Debug.Log("Pawn unselected.");
         RemoveLastClickedPawnSelection();
         lastClickedPawn = null;
     }
@@ -80,7 +78,6 @@ public class PawnMover : MonoBehaviour
     {
         //TODO: Add available moves highlight.
         if (!CanTileBeClicked()) return;
-        Debug.Log("Tile clicked");
         lastClickedTile = tile;
         if (IsMoveNoncapturingAndValid())
             MovePawn();
@@ -102,9 +99,23 @@ public class PawnMover : MonoBehaviour
 
     private void MovePawn()
     {
+        SendMoveToCPU();
         ChangeMovedPawnParent();
         StartCoroutine(AnimatePawnMove());
         RemoveLastClickedPawnSelection();
+    }
+
+    private void SendMoveToCPU()
+    {
+        if (!ShouldMoveBeSentToCPU()) return;
+        TileIndex fromIndex = lastClickedPawn.GetComponent<PawnProperties>().GetTileIndex();
+        TileIndex toIndex = lastClickedTile.GetComponent<TileProperties>().GetTileIndex();
+        cpuPlayer.DoPlayerMove(new Move(fromIndex, toIndex));
+    }
+
+    private bool ShouldMoveBeSentToCPU()
+    {
+        return cpuPlayer != null && cpuPlayer.enabled && GetPawnColor(lastClickedPawn) == PawnColor.White;
     }
 
     private void ChangeMovedPawnParent()
@@ -118,8 +129,8 @@ public class PawnMover : MonoBehaviour
         var targetPosition = lastClickedPawn.transform.parent.position;
         yield return MoveHorizontal(targetPosition);
         promotionChecker.CheckPromotion(lastClickedPawn);
-        EndTurn();
         isPawnMoving = false;
+        EndTurn();
     }
 
     private void EndTurn()
@@ -147,6 +158,7 @@ public class PawnMover : MonoBehaviour
 
     private void CapturePawn()
     {
+        SendMoveToCPU();
         ChangeMovedPawnParent();
         StartCoroutine(AnimatePawnCapture());
         RemoveLastClickedPawnSelection();
@@ -159,35 +171,17 @@ public class PawnMover : MonoBehaviour
         RemoveCapturedPawn();
         yield return null; //Waiting additional frame for captured pawn destruction.
         promotionChecker.CheckPromotion(lastClickedPawn);
-        MulticaptureOrEndTurn();
         isPawnMoving = false;
-    }
-
-    private void RemoveCapturedPawn()
-    {
-        GameObject pawnToCapture = pawnMoveValidator.GetPawnToCapture();
-        turnHandler.DecrementPawnCount(pawnToCapture);
-        Destroy(pawnToCapture);
-    }
-
-    private void MulticaptureOrEndTurn()
-    {
-        if (moveChecker.PawnHasCapturingMove(lastClickedPawn))
-        {
-            isMoveMulticapturing = true;
-            AddPawnSelection();
-        }
-        else
-            EndTurn();
+        MulticaptureOrEndTurn();
     }
 
     private IEnumerator DoCaptureMovement()
     {
-        var targetPosition = lastClickedPawn.transform.position + Vector3.up * scale;
+        var targetPosition = lastClickedPawn.transform.position + Vector3.up;
         yield return MoveVertical(targetPosition);
-        targetPosition = lastClickedPawn.transform.parent.position + Vector3.up * scale;
+        targetPosition = lastClickedPawn.transform.parent.position + Vector3.up;
         yield return MoveHorizontal(targetPosition);
-        targetPosition = lastClickedPawn.transform.position - Vector3.up * scale;
+        targetPosition = lastClickedPawn.transform.position - Vector3.up;
         yield return MoveVertical(targetPosition);
     }
 
@@ -200,5 +194,33 @@ public class PawnMover : MonoBehaviour
                 VerticalMovementSmoothing * Time.deltaTime);
             yield return null;
         }
+    }
+
+    private void RemoveCapturedPawn()
+    {
+        GameObject pawnToCapture = pawnMoveValidator.GetPawnToCapture();
+        turnHandler.DecrementPawnCount(pawnToCapture);
+        Destroy(pawnToCapture);
+    }
+
+    private void MulticaptureOrEndTurn()
+    {
+        if (moveChecker.PawnHasCapturingMove(lastClickedPawn))
+            Multicapture();
+        else
+            EndTurn();
+    }
+
+    private void Multicapture()
+    {
+        isMoveMulticapturing = true;
+        AddPawnSelection();
+        if (IsMoveByCPUAndMulticapturing())
+            cpuPlayer.DoCPUMove();
+    }
+
+    private bool IsMoveByCPUAndMulticapturing()
+    {
+        return cpuPlayer != null && cpuPlayer.enabled && GetPawnColor(lastClickedPawn) == PawnColor.Black;
     }
 }

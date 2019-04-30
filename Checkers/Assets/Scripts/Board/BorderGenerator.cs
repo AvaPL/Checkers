@@ -5,7 +5,6 @@ public class BorderGenerator : MonoBehaviour
     public GameObject Border;
     public GameObject Corner;
 
-    private float scale;
     private int boardSize;
     private GameObject borderGameObject;
     private Vector3 currentPosition;
@@ -15,7 +14,6 @@ public class BorderGenerator : MonoBehaviour
     private void Awake()
     {
         TilesGenerator tilesGenerator = GetComponent<TilesGenerator>();
-        scale = tilesGenerator.Scale;
         boardSize = tilesGenerator.BoardSize;
     }
 
@@ -30,7 +28,7 @@ public class BorderGenerator : MonoBehaviour
     {
         borderGameObject = new GameObject("Border");
         borderGameObject.transform.parent = this.gameObject.transform;
-        borderGameObject.transform.position = (Vector3.left + Vector3.back) * scale;
+        borderGameObject.transform.position = (Vector3.left + Vector3.back);
     }
 
     private void AssignInitialValues()
@@ -63,13 +61,12 @@ public class BorderGenerator : MonoBehaviour
     {
         GameObject instantiatedCorner = Instantiate(objectToCreate, currentPosition,
             objectToCreate.transform.rotation * currentRotation, borderGameObject.transform);
-        instantiatedCorner.transform.localScale *= scale;
         IncrementCurrentPosition();
     }
 
     private void IncrementCurrentPosition()
     {
-        currentPosition += currentDirection * scale;
+        currentPosition += currentDirection;
     }
 
     private void CreateBorderElement()

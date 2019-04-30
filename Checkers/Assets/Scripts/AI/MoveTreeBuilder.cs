@@ -38,19 +38,22 @@ public class MoveTreeBuilder : MonoBehaviour
             InitializeMoveTree(playerMove);
         else
             ChooseMoveInTree(playerMove);
+        Debug.Log("Move from " + playerMove.From.Column + ", " + playerMove.From.Row + " to " +
+                  playerMove.To.Column + ", " + playerMove.To.Row);
         aiPawnMover.DoMove(playerMove);
     }
 
     private void ChooseMoveInTree(Move move)
     {
         ChangeMoveTreeRoot(move);
-        FillMoveTree(moveTree, MoveTreeDepth);
+        FillTreeNode(moveTree, MoveTreeDepth);
     }
 
     private void InitializeMoveTree(Move initialMove)
     {
         moveTree = new TreeNode<Move>(initialMove);
         AddMovesToTreeNode(moveTree, MoveTreeDepth);
+        Debug.Log("Finished initializing tree.");
     }
 
     private void AddMovesToTreeNode(TreeNode<Move> treeNode, int depth)
@@ -144,13 +147,20 @@ public class MoveTreeBuilder : MonoBehaviour
         return !(firstMove.From == secondMove.From && firstMove.To == secondMove.To);
     }
 
-    private void FillMoveTree(TreeNode<Move> moveTreeNode, int depth)
+    private void FillTreeNode(TreeNode<Move> moveTreeNode, int depth)
     {
         if (depth == 1)
             AddMovesToTreeNode(moveTreeNode, depth);
         else
-            foreach (var move in moveTreeNode.Children)
-                FillMoveTree(moveTreeNode, depth - 1);
+            FillEachChildOfTreeNode(moveTreeNode, depth);
+    }
+
+    private void FillEachChildOfTreeNode(TreeNode<Move> moveTreeNode, int depth)
+    {
+        aiPawnMover.DoMove(moveTreeNode.Value);
+        foreach (var move in moveTreeNode.Children)
+            FillTreeNode(move, depth - 1);
+        aiPawnMover.UndoMove(moveTreeNode.Value);
     }
 
     public bool HasNextMove()

@@ -140,10 +140,7 @@ public class MoveChecker : MonoBehaviour
         {
             var tileToCheck = tileGetter.GetTile(tileIndexToCheck);
             if (IsMoveValid(tileIndexToCheck))
-            {
-                Debug.Log("Getting noncapturing move to: " + tileIndexToCheck.Column + ", " + tileIndexToCheck.Row);
                 result.AddLast(tileIndexToCheck);
-            }
         }
 
         return result;
@@ -169,10 +166,7 @@ public class MoveChecker : MonoBehaviour
         {
             var tileToCheck = tileGetter.GetTile(tileIndexToCheck);
             if (pawnMoveValidator.IsCapturingMove(pawnToCheck, tileToCheck))
-            {
-                Debug.Log("Getting capturing move to: " + tileIndexToCheck.Column + ", " + tileIndexToCheck.Row);
                 result.AddLast(tileIndexToCheck);
-            }
         }
 
         return result;

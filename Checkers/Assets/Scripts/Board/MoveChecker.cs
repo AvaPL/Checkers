@@ -34,7 +34,7 @@ public class MoveChecker : MonoBehaviour
         var pawnsToCheck = pawnsColor == PawnColor.White ? whitePawns : blackPawns;
         foreach (var pawn in pawnsToCheck)
         {
-            if (pawn == null)
+            if (pawn == null || !pawn.activeInHierarchy)
                 continue;
             if (PawnHasCapturingMove(pawn))
                 return true;

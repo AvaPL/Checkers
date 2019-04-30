@@ -115,8 +115,7 @@ public class PawnMover : MonoBehaviour
 
     private bool ShouldMoveBeSentToCPU()
     {
-        return cpuPlayer != null && cpuPlayer.gameObject.activeInHierarchy &&
-               GetPawnColor(lastClickedPawn) == PawnColor.White;
+        return cpuPlayer != null && cpuPlayer.enabled && GetPawnColor(lastClickedPawn) == PawnColor.White;
     }
 
     private void ChangeMovedPawnParent()
@@ -222,7 +221,6 @@ public class PawnMover : MonoBehaviour
 
     private bool IsMoveByCPUAndMulticapturing()
     {
-        return cpuPlayer != null && cpuPlayer.gameObject.activeInHierarchy &&
-               GetPawnColor(lastClickedPawn) == PawnColor.Black;
+        return cpuPlayer != null && cpuPlayer.enabled && GetPawnColor(lastClickedPawn) == PawnColor.Black;
     }
 }

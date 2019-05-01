@@ -48,14 +48,14 @@ public class MoveTreeBuilder : MonoBehaviour
 
     public void DoPlayerMove(Move playerMove)
     {
-        if (moveTree == null)
-            InitializeMoveTree(playerMove);
-        else
-            ChooseMoveInTree(playerMove);
+//        if (moveTree == null)
+        CreateMoveTree(playerMove);
+//        else
+//            ChooseMoveInTree(playerMove);
         DoMove(playerMove);
     }
 
-    private void InitializeMoveTree(Move initialMove)
+    private void CreateMoveTree(Move initialMove)
     {
         moveTree = new TreeNode<Move>(initialMove);
         AddMovesToTreeNode(moveTree, MoveTreeDepth);
@@ -83,6 +83,8 @@ public class MoveTreeBuilder : MonoBehaviour
     private void DoMove(Move move)
     {
         aiPawnMover.DoMove(move);
+//        Debug.Log("Move from " + move.From.Column + ", " + move.From.Row + " to " + move.To.Column + ", " +
+//                  move.To.Row);
         DecrementPawnsCountIfCapturing(move);
     }
 
@@ -154,19 +156,23 @@ public class MoveTreeBuilder : MonoBehaviour
             treeNode.Value.Score = whitePawnsCount - blackPawnsCount;
         else
             AssignMoveScoreByPawnColor(treeNode);
+//        Debug.Log("Assigned score for move from " + treeNode.Value.From.Column + ", " + treeNode.Value.From.Row +
+//                  " to " + treeNode.Value.To.Column + ", " + treeNode.Value.To.Row + ": " + treeNode.Value.Score);
     }
 
     private void AssignMoveScoreByPawnColor(TreeNode<Move> treeNode)
     {
         PawnColor pawnColor = GetPawnColor(GetPawnFromTreeNode(treeNode));
         treeNode.Value.Score = pawnColor == PawnColor.White
-            ? treeNode.Children.Max(move => move.Value.Score)
-            : treeNode.Children.Min(move => move.Value.Score);
+            ? treeNode.Children.Min(move => move.Value.Score)
+            : treeNode.Children.Max(move => move.Value.Score);
     }
 
     private void UndoMove(Move move)
     {
         aiPawnMover.UndoMove(move);
+//        Debug.Log("Undo move from " + move.From.Column + ", " + move.From.Row + " to " + move.To.Column + ", " +
+//                  move.To.Row);
         IncrementPawnsCountIfCapturing(move);
     }
 
@@ -179,45 +185,45 @@ public class MoveTreeBuilder : MonoBehaviour
             ++blackPawnsCount;
     }
 
-    private void ChooseMoveInTree(Move move)
-    {
-        ChangeMoveTreeRoot(move);
-        FillTreeNode(moveTree, MoveTreeDepth);
-    }
+//    private void ChooseMoveInTree(Move move)
+//    {
+//        ChangeMoveTreeRoot(move);
+//        FillTreeNode(moveTree, MoveTreeDepth);
+//    }
 
-    private void ChangeMoveTreeRoot(Move move)
-    {
-        foreach (var moveNode in moveTree.Children)
-        {
-            if (!PositionChangeIsDifferent(move, moveNode.Value))
-            {
-                moveTree = moveNode;
-                break;
-            }
-        }
-    }
+//    private void ChangeMoveTreeRoot(Move move)
+//    {
+//        foreach (var moveNode in moveTree.Children)
+//        {
+//            if (!PositionChangeIsDifferent(move, moveNode.Value))
+//            {
+//                moveTree = moveNode;
+//                break;
+//            }
+//        }
+//    }
 
-    private bool PositionChangeIsDifferent(Move firstMove, Move secondMove)
-    {
-        return !(firstMove.From == secondMove.From && firstMove.To == secondMove.To);
-    }
+//    private bool PositionChangeIsDifferent(Move firstMove, Move secondMove)
+//    {
+//        return !(firstMove.From == secondMove.From && firstMove.To == secondMove.To);
+//    }
 
-    private void FillTreeNode(TreeNode<Move> moveTreeNode, int depth)
-    {
-        if (depth == 1)
-            AddMovesToTreeNode(moveTreeNode, depth);
-        else
-            FillEachChildOfTreeNode(moveTreeNode, depth);
-    }
+//    private void FillTreeNode(TreeNode<Move> moveTreeNode, int depth)
+//    {
+//        if (depth == 1)
+//            AddMovesToTreeNode(moveTreeNode, depth);
+//        else
+//            FillEachChildOfTreeNode(moveTreeNode, depth);
+//    }
 
-    private void FillEachChildOfTreeNode(TreeNode<Move> moveTreeNode, int depth)
-    {
-        DoMove(moveTreeNode.Value);
-        foreach (var move in moveTreeNode.Children)
-            FillTreeNode(move, depth - 1);
-        AssignMoveScore(moveTreeNode);
-        UndoMove(moveTreeNode.Value);
-    }
+//    private void FillEachChildOfTreeNode(TreeNode<Move> moveTreeNode, int depth)
+//    {
+//        DoMove(moveTreeNode.Value);
+//        foreach (var move in moveTreeNode.Children)
+//            FillTreeNode(move, depth - 1);
+//        AssignMoveScore(moveTreeNode);
+//        UndoMove(moveTreeNode.Value);
+//    }
 
     public bool HasNextMove()
     {
@@ -226,8 +232,9 @@ public class MoveTreeBuilder : MonoBehaviour
 
     public Move ChooseNextCPUMove()
     {
-        Move move = ChooseOptimalCPUMove(); //TODO: Change choosing random move to minimax algorithm.
-        ChooseMoveInTree(move);
+        Move move = ChooseOptimalCPUMove();
+//        ChooseMoveInTree(move);
+        CreateMoveTree(move);
         DoMove(move);
         return move;
     }
@@ -237,9 +244,9 @@ public class MoveTreeBuilder : MonoBehaviour
         Debug.Log("Possible number of moves from this position: " + moveTree.Children.Count);
         int minimalScore = moveTree.Children.Min(move => move.Value.Score);
         Debug.Log("Minimal score: " + minimalScore);
-        var movesWithMinimalScore = moveTree.Children.Where(move => move.Value.Score == minimalScore);
-        Debug.Log("Moves with minimal score: " + movesWithMinimalScore.Count());
-        int moveIndex = Random.Range(0, movesWithMinimalScore.Count() - 1);
-        return moveTree.Children.ElementAt(moveIndex).Value;
+        var movesWithMinimalScore = moveTree.Children.Where(move => move.Value.Score == minimalScore).ToArray();
+        Debug.Log("Moves with minimal score: " + movesWithMinimalScore.Length);
+        int moveIndex = Random.Range(0, movesWithMinimalScore.Length - 1);
+        return movesWithMinimalScore[moveIndex].Value;
     }
 }

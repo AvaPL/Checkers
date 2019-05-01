@@ -99,7 +99,7 @@ public class MoveTreeBuilder : MonoBehaviour
 
     private void AddPossibleMoves(TreeNode<Move> treeNode, int depth)
     {
-        if (treeNode.Value.IsMoveMulticapturing)
+        if (treeNode.Value.IsMulticapturing)
             ContinueMulticapturingMove(treeNode, depth);
         else
             AddNewMove(treeNode, depth);
@@ -234,7 +234,8 @@ public class MoveTreeBuilder : MonoBehaviour
     {
         Move move = ChooseOptimalCPUMove();
 //        ChooseMoveInTree(move);
-        CreateMoveTree(move);
+        if (move.IsMulticapturing) //Tree will be created after white move if move is not multicapturing.
+            CreateMoveTree(move);
         DoMove(move);
         return move;
     }

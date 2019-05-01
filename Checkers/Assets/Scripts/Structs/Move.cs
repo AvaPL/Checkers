@@ -7,6 +7,7 @@ public class Move
     public GameObject CapturedPawn { get; set; }
     public bool IsMoveMulticapturing { get; set; }
     public bool WasPawnPromoted { get; set; }
+    public int Score { get; set; }
 
     public Move(TileIndex from, TileIndex to)
     {

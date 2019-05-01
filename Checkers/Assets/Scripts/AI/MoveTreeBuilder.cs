@@ -6,12 +6,14 @@ public class MoveTreeBuilder : MonoBehaviour
 {
     public int MoveTreeDepth;
 
-    private LinkedList<GameObject> whitePawns = new LinkedList<GameObject>();
-    private LinkedList<GameObject> blackPawns = new LinkedList<GameObject>();
     private MoveChecker moveChecker;
     private AIPawnMover aiPawnMover;
     private TileGetter tileGetter;
     private TreeNode<Move> moveTree;
+    private LinkedList<GameObject> whitePawns = new LinkedList<GameObject>();
+    private LinkedList<GameObject> blackPawns = new LinkedList<GameObject>();
+    private int whitePawnsCount;
+    private int blackPawnsCount;
 
     private void Awake()
     {
@@ -21,6 +23,12 @@ public class MoveTreeBuilder : MonoBehaviour
     }
 
     private void Start()
+    {
+        InitializePawns();
+        CountPawns();
+    }
+
+    private void InitializePawns()
     {
         var pawnsProperties = GetComponentsInChildren<PawnProperties>();
         foreach (var element in pawnsProperties)
@@ -32,46 +40,67 @@ public class MoveTreeBuilder : MonoBehaviour
         }
     }
 
+    private void CountPawns()
+    {
+        whitePawnsCount = whitePawns.Count;
+        blackPawnsCount = blackPawns.Count;
+    }
+
     public void DoPlayerMove(Move playerMove)
     {
         if (moveTree == null)
             InitializeMoveTree(playerMove);
         else
             ChooseMoveInTree(playerMove);
-        Debug.Log("Move from " + playerMove.From.Column + ", " + playerMove.From.Row + " to " +
-                  playerMove.To.Column + ", " + playerMove.To.Row);
-        aiPawnMover.DoMove(playerMove);
-    }
-
-    private void ChooseMoveInTree(Move move)
-    {
-        ChangeMoveTreeRoot(move);
-        FillTreeNode(moveTree, MoveTreeDepth);
+        DoMove(playerMove);
     }
 
     private void InitializeMoveTree(Move initialMove)
     {
         moveTree = new TreeNode<Move>(initialMove);
         AddMovesToTreeNode(moveTree, MoveTreeDepth);
-        Debug.Log("Finished initializing tree.");
     }
 
     private void AddMovesToTreeNode(TreeNode<Move> treeNode, int depth)
     {
-        if (depth == 0) return;
+        DoMove(treeNode.Value);
+        if (depth != 0)
+            AddPossibleMoves(treeNode, depth);
+        AssignMoveScore(treeNode);
+        UndoMove(treeNode.Value);
+    }
 
-        Debug.Log("Move from " + treeNode.Value.From.Column + ", " + treeNode.Value.From.Row + " to " +
-                  treeNode.Value.To.Column + ", " + treeNode.Value.To.Row);
-        aiPawnMover.DoMove(treeNode.Value);
+    private PawnColor GetPawnColor(GameObject pawn)
+    {
+        return pawn.GetComponent<PawnProperties>().PawnColor;
+    }
 
+    private GameObject GetPawnFromTreeNode(TreeNode<Move> treeNode)
+    {
+        return tileGetter.GetTile(treeNode.Value.To).GetComponent<TileProperties>().GetPawn();
+    }
+
+    private void DoMove(Move move)
+    {
+        aiPawnMover.DoMove(move);
+        DecrementPawnsCountIfCapturing(move);
+    }
+
+    private void DecrementPawnsCountIfCapturing(Move move)
+    {
+        if (move.CapturedPawn == null) return;
+        if (GetPawnColor(move.CapturedPawn) == PawnColor.White)
+            --whitePawnsCount;
+        else
+            --blackPawnsCount;
+    }
+
+    private void AddPossibleMoves(TreeNode<Move> treeNode, int depth)
+    {
         if (treeNode.Value.IsMoveMulticapturing)
             ContinueMulticapturingMove(treeNode, depth);
         else
             AddNewMove(treeNode, depth);
-
-        Debug.Log("Undo move from " + treeNode.Value.From.Column + ", " + treeNode.Value.From.Row + " to " +
-                  treeNode.Value.To.Column + ", " + treeNode.Value.To.Row);
-        aiPawnMover.UndoMove(treeNode.Value);
     }
 
     private void ContinueMulticapturingMove(TreeNode<Move> treeNode, int depth)
@@ -83,16 +112,8 @@ public class MoveTreeBuilder : MonoBehaviour
         {
             var move = new Move(pawnTileIndex, moveIndex);
             var moveTreeNode = treeNode.AddChild(move);
-            Debug.Log("Added multicapturing move from " + pawnTileIndex.Column + ", " + pawnTileIndex.Row + " to " +
-                      moveIndex.Column + ", " + moveIndex.Row +
-                      " ------------------------------------------------------------------------------------------------------------------------------------------");
             AddMovesToTreeNode(moveTreeNode, depth - 1);
         }
-    }
-
-    private GameObject GetPawnFromTreeNode(TreeNode<Move> treeNode)
-    {
-        return tileGetter.GetTile(treeNode.Value.To).GetComponent<TileProperties>().GetPawn();
     }
 
     private void AddNewMove(TreeNode<Move> treeNode, int depth)
@@ -106,8 +127,6 @@ public class MoveTreeBuilder : MonoBehaviour
             {
                 var move = new Move(pawnTileIndex, moveIndex);
                 var moveTreeNode = treeNode.AddChild(move);
-                Debug.Log("Added move from " + pawnTileIndex.Column + ", " + pawnTileIndex.Row + " to " +
-                          moveIndex.Column + ", " + moveIndex.Row);
                 AddMovesToTreeNode(moveTreeNode, depth - 1);
             }
         }
@@ -116,18 +135,54 @@ public class MoveTreeBuilder : MonoBehaviour
     private LinkedList<GameObject> GetPawnsToCheck(TreeNode<Move> treeNode)
     {
         GameObject pawn = GetPawnFromTreeNode(treeNode);
-        PawnColor pawnColor = pawn.GetComponent<PawnProperties>().PawnColor;
+        PawnColor pawnColor = GetPawnColor(pawn);
         return pawnColor == PawnColor.White ? blackPawns : whitePawns; //Opposite pawns should be checked.
     }
 
     private LinkedList<TileIndex> GetPawnMoves(GameObject pawn)
     {
-        PawnColor pawnColorToCheck = pawn.GetComponent<PawnProperties>().PawnColor;
+        PawnColor pawnColorToCheck = GetPawnColor(pawn);
         bool pawnsHaveCapturingMove = moveChecker.PawnsHaveCapturingMove(pawnColorToCheck);
-        Debug.Log(pawnColorToCheck + " pawns have capturing move: " + pawnsHaveCapturingMove);
         return pawnsHaveCapturingMove
             ? moveChecker.GetPawnCapturingMoves(pawn)
             : moveChecker.GetPawnNoncapturingMoves(pawn);
+    }
+
+    private void AssignMoveScore(TreeNode<Move> treeNode)
+    {
+        if (treeNode.Children.Count == 0)
+            treeNode.Value.Score = whitePawnsCount - blackPawnsCount;
+        else
+            AssignMoveScoreByPawnColor(treeNode);
+    }
+
+    private void AssignMoveScoreByPawnColor(TreeNode<Move> treeNode)
+    {
+        PawnColor pawnColor = GetPawnColor(GetPawnFromTreeNode(treeNode));
+        treeNode.Value.Score = pawnColor == PawnColor.White
+            ? treeNode.Children.Max(move => move.Value.Score)
+            : treeNode.Children.Min(move => move.Value.Score);
+    }
+
+    private void UndoMove(Move move)
+    {
+        aiPawnMover.UndoMove(move);
+        IncrementPawnsCountIfCapturing(move);
+    }
+
+    private void IncrementPawnsCountIfCapturing(Move move)
+    {
+        if (move.CapturedPawn == null) return;
+        if (GetPawnColor(move.CapturedPawn) == PawnColor.White)
+            ++whitePawnsCount;
+        else
+            ++blackPawnsCount;
+    }
+
+    private void ChooseMoveInTree(Move move)
+    {
+        ChangeMoveTreeRoot(move);
+        FillTreeNode(moveTree, MoveTreeDepth);
     }
 
     private void ChangeMoveTreeRoot(Move move)
@@ -157,10 +212,11 @@ public class MoveTreeBuilder : MonoBehaviour
 
     private void FillEachChildOfTreeNode(TreeNode<Move> moveTreeNode, int depth)
     {
-        aiPawnMover.DoMove(moveTreeNode.Value);
+        DoMove(moveTreeNode.Value);
         foreach (var move in moveTreeNode.Children)
             FillTreeNode(move, depth - 1);
-        aiPawnMover.UndoMove(moveTreeNode.Value);
+        AssignMoveScore(moveTreeNode);
+        UndoMove(moveTreeNode.Value);
     }
 
     public bool HasNextMove()
@@ -170,16 +226,20 @@ public class MoveTreeBuilder : MonoBehaviour
 
     public Move ChooseNextCPUMove()
     {
-        Move move = ChooseRandomCPUMove(); //TODO: Change choosing random move to minimax algorithm.
+        Move move = ChooseOptimalCPUMove(); //TODO: Change choosing random move to minimax algorithm.
         ChooseMoveInTree(move);
-        aiPawnMover.DoMove(move);
+        DoMove(move);
         return move;
     }
 
-    private Move ChooseRandomCPUMove()
+    private Move ChooseOptimalCPUMove()
     {
         Debug.Log("Possible number of moves from this position: " + moveTree.Children.Count);
-        int moveIndex = Random.Range(0, moveTree.Children.Count - 1);
+        int minimalScore = moveTree.Children.Min(move => move.Value.Score);
+        Debug.Log("Minimal score: " + minimalScore);
+        var movesWithMinimalScore = moveTree.Children.Where(move => move.Value.Score == minimalScore);
+        Debug.Log("Moves with minimal score: " + movesWithMinimalScore.Count());
+        int moveIndex = Random.Range(0, movesWithMinimalScore.Count() - 1);
         return moveTree.Children.ElementAt(moveIndex).Value;
     }
 }

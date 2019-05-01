@@ -24,7 +24,6 @@ public class PawnProperties : MonoBehaviour
         IsKing = true;
         CreatePromotionParticles();
         StartCoroutine(AddCrown());
-        Debug.Log("Pawn promoted to king.");
     }
 
     private void CreatePromotionParticles()

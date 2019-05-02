@@ -48,10 +48,7 @@ public class MoveTreeBuilder : MonoBehaviour
 
     public void DoPlayerMove(Move playerMove)
     {
-//        if (moveTree == null)
         CreateMoveTree(playerMove);
-//        else
-//            ChooseMoveInTree(playerMove);
         DoMove(playerMove);
     }
 
@@ -61,23 +58,16 @@ public class MoveTreeBuilder : MonoBehaviour
         AddMovesToTreeNode(moveTree, MoveTreeDepth);
     }
 
-    private void AddMovesToTreeNode(TreeNode<Move> treeNode, int depth)
+    //TODO: Implement alpha-beta pruning.
+    private void AddMovesToTreeNode(TreeNode<Move> treeNode, int depth /*, int alpha, int beta*/)
     {
         DoMove(treeNode.Value);
         if (depth != 0)
             AddPossibleMoves(treeNode, depth);
         AssignMoveScore(treeNode);
+//        alpha = Mathf.Max(alpha, treeNode.Value.Score);
+//        beta = Mathf.Min(beta, treeNode.Value.Score);
         UndoMove(treeNode.Value);
-    }
-
-    private PawnColor GetPawnColor(GameObject pawn)
-    {
-        return pawn.GetComponent<PawnProperties>().PawnColor;
-    }
-
-    private GameObject GetPawnFromTreeNode(TreeNode<Move> treeNode)
-    {
-        return tileGetter.GetTile(treeNode.Value.To).GetComponent<TileProperties>().GetPawn();
     }
 
     private void DoMove(Move move)
@@ -95,6 +85,11 @@ public class MoveTreeBuilder : MonoBehaviour
             --whitePawnsCount;
         else
             --blackPawnsCount;
+    }
+
+    private PawnColor GetPawnColor(GameObject pawn)
+    {
+        return pawn.GetComponent<PawnProperties>().PawnColor;
     }
 
     private void AddPossibleMoves(TreeNode<Move> treeNode, int depth)
@@ -116,6 +111,11 @@ public class MoveTreeBuilder : MonoBehaviour
             var moveTreeNode = treeNode.AddChild(move);
             AddMovesToTreeNode(moveTreeNode, depth - 1);
         }
+    }
+
+    private GameObject GetPawnFromTreeNode(TreeNode<Move> treeNode)
+    {
+        return tileGetter.GetTile(treeNode.Value.To).GetComponent<TileProperties>().GetPawn();
     }
 
     private void AddNewMove(TreeNode<Move> treeNode, int depth)
@@ -162,10 +162,21 @@ public class MoveTreeBuilder : MonoBehaviour
 
     private void AssignMoveScoreByPawnColor(TreeNode<Move> treeNode)
     {
+        treeNode.Value.Score = IsMoveByMaximizingPlayer(treeNode)
+            ? treeNode.Children.Max(move => move.Value.Score)
+            : treeNode.Children.Min(move => move.Value.Score);
+    }
+
+    private bool IsMoveByMaximizingPlayer(TreeNode<Move> treeNode)
+    {
+        /* White|Multicapturing|Value
+         *   1  |      1       |  1
+         *   1  |      0       |  0
+         *   0  |      1       |  0
+         *   0  |      0       |  1
+         */
         PawnColor pawnColor = GetPawnColor(GetPawnFromTreeNode(treeNode));
-        treeNode.Value.Score = pawnColor == PawnColor.White
-            ? treeNode.Children.Min(move => move.Value.Score)
-            : treeNode.Children.Max(move => move.Value.Score);
+        return (pawnColor == PawnColor.White) == treeNode.Value.IsMulticapturing; //XNOR
     }
 
     private void UndoMove(Move move)
@@ -185,46 +196,6 @@ public class MoveTreeBuilder : MonoBehaviour
             ++blackPawnsCount;
     }
 
-//    private void ChooseMoveInTree(Move move)
-//    {
-//        ChangeMoveTreeRoot(move);
-//        FillTreeNode(moveTree, MoveTreeDepth);
-//    }
-
-//    private void ChangeMoveTreeRoot(Move move)
-//    {
-//        foreach (var moveNode in moveTree.Children)
-//        {
-//            if (!PositionChangeIsDifferent(move, moveNode.Value))
-//            {
-//                moveTree = moveNode;
-//                break;
-//            }
-//        }
-//    }
-
-//    private bool PositionChangeIsDifferent(Move firstMove, Move secondMove)
-//    {
-//        return !(firstMove.From == secondMove.From && firstMove.To == secondMove.To);
-//    }
-
-//    private void FillTreeNode(TreeNode<Move> moveTreeNode, int depth)
-//    {
-//        if (depth == 1)
-//            AddMovesToTreeNode(moveTreeNode, depth);
-//        else
-//            FillEachChildOfTreeNode(moveTreeNode, depth);
-//    }
-
-//    private void FillEachChildOfTreeNode(TreeNode<Move> moveTreeNode, int depth)
-//    {
-//        DoMove(moveTreeNode.Value);
-//        foreach (var move in moveTreeNode.Children)
-//            FillTreeNode(move, depth - 1);
-//        AssignMoveScore(moveTreeNode);
-//        UndoMove(moveTreeNode.Value);
-//    }
-
     public bool HasNextMove()
     {
         return moveTree.Children.Count > 0;
@@ -233,7 +204,6 @@ public class MoveTreeBuilder : MonoBehaviour
     public Move ChooseNextCPUMove()
     {
         Move move = ChooseOptimalCPUMove();
-//        ChooseMoveInTree(move);
         if (move.IsMulticapturing) //Tree will be created after white move if move is not multicapturing.
             CreateMoveTree(move);
         DoMove(move);

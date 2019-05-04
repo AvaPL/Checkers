@@ -55,14 +55,14 @@ public class MoveTreeBuilder : MonoBehaviour
     private void CreateMoveTree(Move initialMove)
     {
         moveTree = new TreeNode<Move>(initialMove);
-        AddMovesToTreeNode(moveTree, MoveTreeDepth);
+        AddMovesToTreeNode(moveTree, MoveTreeDepth, int.MinValue, int.MaxValue);
     }
 
-    private void AddMovesToTreeNode(TreeNode<Move> treeNode, int depth)
+    private void AddMovesToTreeNode(TreeNode<Move> treeNode, int depth, int alpha, int beta)
     {
         DoMove(treeNode.Value);
         if (depth != 0)
-            AddPossibleMoves(treeNode, depth);
+            AddPossibleMoves(treeNode, depth, alpha, beta);
         AssignMoveScore(treeNode);
         UndoMove(treeNode.Value);
     }
@@ -87,15 +87,15 @@ public class MoveTreeBuilder : MonoBehaviour
         return pawn.GetComponent<PawnProperties>().PawnColor;
     }
 
-    private void AddPossibleMoves(TreeNode<Move> treeNode, int depth)
+    private void AddPossibleMoves(TreeNode<Move> treeNode, int depth, int alpha, int beta)
     {
         if (treeNode.Value.IsMulticapturing)
-            ContinueMulticapturingMove(treeNode, depth);
+            ContinueMulticapturingMove(treeNode, depth, alpha, beta);
         else
-            AddNewMove(treeNode, depth);
+            AddNewMove(treeNode, depth, alpha, beta);
     }
 
-    private void ContinueMulticapturingMove(TreeNode<Move> treeNode, int depth)
+    private void ContinueMulticapturingMove(TreeNode<Move> treeNode, int depth, int alpha, int beta)
     {
         GameObject pawn = GetPawnFromTreeNode(treeNode);
         var capturingMoves = moveChecker.GetPawnCapturingMoves(pawn);
@@ -104,7 +104,10 @@ public class MoveTreeBuilder : MonoBehaviour
         {
             var move = new Move(pawnTileIndex, moveIndex);
             var moveTreeNode = treeNode.AddChild(move);
-            AddMovesToTreeNode(moveTreeNode, depth - 1);
+            AddMovesToTreeNode(moveTreeNode, depth - 1, alpha, beta);
+            SetAlphaAndBeta(IsMoveByMaximizingPlayer(treeNode), moveTreeNode.Value.Score, ref alpha, ref beta);
+            if (beta < alpha)
+                return;
         }
     }
 
@@ -113,7 +116,15 @@ public class MoveTreeBuilder : MonoBehaviour
         return tileGetter.GetTile(treeNode.Value.To).GetComponent<TileProperties>().GetPawn();
     }
 
-    private void AddNewMove(TreeNode<Move> treeNode, int depth)
+    private void SetAlphaAndBeta(bool isMoveByMaximizingPlayer, int score, ref int alpha, ref int beta)
+    {
+        if (isMoveByMaximizingPlayer)
+            alpha = Mathf.Max(alpha, score);
+        else
+            beta = Mathf.Min(beta, score);
+    }
+
+    private void AddNewMove(TreeNode<Move> treeNode, int depth, int alpha, int beta)
     {
         foreach (var pawn in GetPawnsToCheck(treeNode))
         {
@@ -124,7 +135,10 @@ public class MoveTreeBuilder : MonoBehaviour
             {
                 var move = new Move(pawnTileIndex, moveIndex);
                 var moveTreeNode = treeNode.AddChild(move);
-                AddMovesToTreeNode(moveTreeNode, depth - 1);
+                AddMovesToTreeNode(moveTreeNode, depth - 1, alpha, beta);
+                SetAlphaAndBeta(IsMoveByMaximizingPlayer(treeNode), moveTreeNode.Value.Score, ref alpha, ref beta);
+                if (beta < alpha)
+                    return;
             }
         }
     }

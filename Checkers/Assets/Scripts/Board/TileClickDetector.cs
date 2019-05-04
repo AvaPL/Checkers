@@ -30,7 +30,6 @@ public class TileClickDetector : MonoBehaviour
 
     public void ClickTile()
     {
-        Debug.Log("Tile clicked from script: " + tileProperties.GetTileIndex().Column + ", " + tileProperties.GetTileIndex().Row);
         OnMouseDown();
     }
 }

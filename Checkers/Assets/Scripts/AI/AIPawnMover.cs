@@ -93,7 +93,7 @@ public class AIPawnMover : MonoBehaviour
 
     private void CheckMulticapture()
     {
-        lastMove.IsMoveMulticapturing = moveChecker.PawnHasCapturingMove(lastSelectedPawn);
+        lastMove.IsMulticapturing = moveChecker.PawnHasCapturingMove(lastSelectedPawn);
     }
 
     private void MovePawn()

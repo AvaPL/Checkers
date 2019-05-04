@@ -70,8 +70,6 @@ public class MoveTreeBuilder : MonoBehaviour
     private void DoMove(Move move)
     {
         aiPawnMover.DoMove(move);
-//        Debug.Log("Move from " + move.From.Column + ", " + move.From.Row + " to " + move.To.Column + ", " +
-//                  move.To.Row);
         DecrementPawnsCountIfCapturing(move);
     }
 
@@ -108,7 +106,7 @@ public class MoveTreeBuilder : MonoBehaviour
             var moveTreeNode = treeNode.AddChild(move);
             AddMovesToTreeNode(moveTreeNode, depth - 1, alpha, beta);
             SetAlphaAndBeta(IsMoveByMaximizingPlayer(treeNode), moveTreeNode.Value.Score, ref alpha, ref beta);
-            if (beta <= alpha)
+            if (beta < alpha)
                 return;
         }
     }
@@ -139,7 +137,7 @@ public class MoveTreeBuilder : MonoBehaviour
                 var moveTreeNode = treeNode.AddChild(move);
                 AddMovesToTreeNode(moveTreeNode, depth - 1, alpha, beta);
                 SetAlphaAndBeta(IsMoveByMaximizingPlayer(treeNode), moveTreeNode.Value.Score, ref alpha, ref beta);
-                if (beta <= alpha)
+                if (beta < alpha)
                     return;
             }
         }
@@ -167,8 +165,6 @@ public class MoveTreeBuilder : MonoBehaviour
             treeNode.Value.Score = whitePawnsCount - blackPawnsCount;
         else
             AssignMoveScoreByPawnColor(treeNode);
-//        Debug.Log("Assigned score for move from " + treeNode.Value.From.Column + ", " + treeNode.Value.From.Row +
-//                  " to " + treeNode.Value.To.Column + ", " + treeNode.Value.To.Row + ": " + treeNode.Value.Score);
     }
 
     private void AssignMoveScoreByPawnColor(TreeNode<Move> treeNode)
@@ -193,8 +189,6 @@ public class MoveTreeBuilder : MonoBehaviour
     private void UndoMove(Move move)
     {
         aiPawnMover.UndoMove(move);
-//        Debug.Log("Undo move from " + move.From.Column + ", " + move.From.Row + " to " + move.To.Column + ", " +
-//                  move.To.Row);
         IncrementPawnsCountIfCapturing(move);
     }
 

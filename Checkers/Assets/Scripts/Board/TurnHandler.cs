@@ -20,7 +20,7 @@ public class TurnHandler : MonoBehaviour
 
     private void Start()
     {
-        int boardSize = GetComponent<TilesGenerator>().BoardSize;
+        int boardSize = GetComponent<ITilesGenerator>().BoardSize;
         int pawnRows = GetComponent<PawnsGenerator>().PawnRows;
         whitePawnCount = blackPawnCount = Mathf.CeilToInt(boardSize * pawnRows / 2f);
         cpuPlayer = GetComponent<CPUPlayer>();
@@ -41,7 +41,7 @@ public class TurnHandler : MonoBehaviour
 
     public void DecrementPawnCount(GameObject pawn)
     {
-        var pawnColor = pawn.GetComponent<PawnProperties>().PawnColor;
+        var pawnColor = pawn.GetComponent<IPawnProperties>().PawnColor;
         if (pawnColor == PawnColor.White)
             --whitePawnCount;
         else

@@ -1,11 +1,9 @@
 ﻿using UnityEngine;
 
-public class TilesGenerator : MonoBehaviour, ITilesGenerator
+public class AITilesGenerator : MonoBehaviour, ITilesGenerator
 {
     public int BoardSize { get; private set; }
     public GameObject Tile;
-    public Material WhiteMaterial;
-    public Material BlackMaterial;
 
     private void Start()
     {
@@ -47,7 +45,5 @@ public class TilesGenerator : MonoBehaviour, ITilesGenerator
             columnTransform.position + Vector3.forward * rowIndex, Tile.transform.rotation,
             columnTransform);
         instantiatedTile.name = "Tile" + rowIndex;
-        instantiatedTile.GetComponent<Renderer>().material =
-            (columnIndex + rowIndex) % 2 != 0 ? WhiteMaterial : BlackMaterial;
     }
 }

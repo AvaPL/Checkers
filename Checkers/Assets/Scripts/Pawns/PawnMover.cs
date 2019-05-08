@@ -55,7 +55,7 @@ public class PawnMover : MonoBehaviour
 
     private void AddPawnSelection()
     {
-        lastClickedPawn.GetComponent<PawnProperties>().AddPawnSelection();
+        lastClickedPawn.GetComponent<IPawnProperties>().AddPawnSelection();
     }
 
     private void UnselectPawn()
@@ -66,12 +66,12 @@ public class PawnMover : MonoBehaviour
 
     private void RemoveLastClickedPawnSelection()
     {
-        lastClickedPawn.GetComponent<PawnProperties>().RemovePawnSelection();
+        lastClickedPawn.GetComponent<IPawnProperties>().RemovePawnSelection();
     }
 
     private PawnColor GetPawnColor(GameObject pawn)
     {
-        return pawn.GetComponent<PawnProperties>().PawnColor;
+        return pawn.GetComponent<IPawnProperties>().PawnColor;
     }
 
     public void TileClicked(GameObject tile)
@@ -108,7 +108,7 @@ public class PawnMover : MonoBehaviour
     private void SendMoveToCPU()
     {
         if (!ShouldMoveBeSentToCPU()) return;
-        TileIndex fromIndex = lastClickedPawn.GetComponent<PawnProperties>().GetTileIndex();
+        TileIndex fromIndex = lastClickedPawn.GetComponent<IPawnProperties>().GetTileIndex();
         TileIndex toIndex = lastClickedTile.GetComponent<TileProperties>().GetTileIndex();
         cpuPlayer.DoPlayerMove(new Move(fromIndex, toIndex));
     }

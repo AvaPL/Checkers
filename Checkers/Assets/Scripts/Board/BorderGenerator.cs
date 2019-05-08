@@ -13,7 +13,7 @@ public class BorderGenerator : MonoBehaviour
 
     private void Awake()
     {
-        TilesGenerator tilesGenerator = GetComponent<TilesGenerator>();
+        ITilesGenerator tilesGenerator = GetComponent<ITilesGenerator>();
         boardSize = tilesGenerator.BoardSize;
     }
 

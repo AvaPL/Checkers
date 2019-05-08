@@ -4,8 +4,6 @@ public class AIPawnsGenerator : MonoBehaviour
 {
     public int PawnRows { get; private set; }
     public GameObject Pawn;
-    public Material WhiteMaterial;
-    public Material BlackMaterial;
 
     private TileGetter tileGetter;
     private int boardSize;
@@ -13,7 +11,7 @@ public class AIPawnsGenerator : MonoBehaviour
     private void Awake()
     {
         tileGetter = GetComponent<TileGetter>();
-        boardSize = GetComponent<TilesGenerator>().BoardSize;
+        boardSize = GetComponent<ITilesGenerator>().BoardSize;
         PawnRows = PlayerPrefs.GetInt("PawnRows");
     }
 
@@ -37,9 +35,7 @@ public class AIPawnsGenerator : MonoBehaviour
     {
         Transform tileTransform = tileGetter.GetTile(columnIndex, rowIndex).transform;
         GameObject instantiatedPawn = Instantiate(Pawn, tileTransform.position, Pawn.transform.rotation, tileTransform);
-        instantiatedPawn.GetComponent<Renderer>().material =
-            pawnColor == PawnColor.White ? WhiteMaterial : BlackMaterial; //TODO: Remove, renderer is not needed for AI.
-        instantiatedPawn.GetComponent<PawnProperties>().PawnColor = pawnColor;
+        instantiatedPawn.GetComponent<IPawnProperties>().PawnColor = pawnColor;
     }
 
     private void GenerateBlackPawns()

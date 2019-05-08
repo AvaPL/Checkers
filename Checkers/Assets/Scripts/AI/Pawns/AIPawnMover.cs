@@ -72,9 +72,9 @@ public class AIPawnMover : MonoBehaviour
 
     private void CheckPromotion()
     {
-        if (lastSelectedPawn.GetComponent<PawnProperties>().IsKing) return;
+        if (lastSelectedPawn.GetComponent<IPawnProperties>().IsKing) return;
         promotionChecker.CheckPromotion(lastSelectedPawn);
-        if (lastSelectedPawn.GetComponent<PawnProperties>().IsKing)
+        if (lastSelectedPawn.GetComponent<IPawnProperties>().IsKing)
             lastMove.WasPawnPromoted = true;
     }
 
@@ -146,6 +146,6 @@ public class AIPawnMover : MonoBehaviour
     private void UndoPromotion()
     {
         if (lastMove.WasPawnPromoted)
-            GetLastMovePawn().GetComponent<PawnProperties>().IsKing = false;
+            GetLastMovePawn().GetComponent<IPawnProperties>().IsKing = false;
     }
 }

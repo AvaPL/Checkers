@@ -4,12 +4,12 @@ public class TileProperties : MonoBehaviour
 {
     public bool IsOccupied()
     {
-        return GetComponentInChildren<PawnProperties>() != null;
+        return GetComponentInChildren<IPawnProperties>() != null;
     }
 
     public GameObject GetPawn()
     {
-        return GetComponentInChildren<PawnProperties>().gameObject;
+        return GetComponentInChildren<IPawnProperties>().gameObject;
     }
 
     public TileIndex GetTileIndex()

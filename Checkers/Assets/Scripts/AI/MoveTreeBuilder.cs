@@ -30,7 +30,7 @@ public class MoveTreeBuilder : MonoBehaviour
 
     private void InitializePawns()
     {
-        var pawnsProperties = GetComponentsInChildren<PawnProperties>();
+        var pawnsProperties = GetComponentsInChildren<IPawnProperties>();
         foreach (var element in pawnsProperties)
         {
             if (element.PawnColor == PawnColor.White)
@@ -84,7 +84,7 @@ public class MoveTreeBuilder : MonoBehaviour
 
     private PawnColor GetPawnColor(GameObject pawn)
     {
-        return pawn.GetComponent<PawnProperties>().PawnColor;
+        return pawn.GetComponent<IPawnProperties>().PawnColor;
     }
 
     private void AddPossibleMoves(TreeNode<Move> treeNode, int depth, int alpha, int beta)
@@ -99,7 +99,7 @@ public class MoveTreeBuilder : MonoBehaviour
     {
         GameObject pawn = GetPawnFromTreeNode(treeNode);
         var capturingMoves = moveChecker.GetPawnCapturingMoves(pawn);
-        TileIndex pawnTileIndex = pawn.GetComponent<PawnProperties>().GetTileIndex();
+        TileIndex pawnTileIndex = pawn.GetComponent<IPawnProperties>().GetTileIndex();
         foreach (var moveIndex in capturingMoves)
         {
             var move = new Move(pawnTileIndex, moveIndex);
@@ -130,7 +130,7 @@ public class MoveTreeBuilder : MonoBehaviour
         {
             if (!pawn.activeInHierarchy) continue;
             var moves = GetPawnMoves(pawn);
-            TileIndex pawnTileIndex = pawn.GetComponent<PawnProperties>().GetTileIndex();
+            TileIndex pawnTileIndex = pawn.GetComponent<IPawnProperties>().GetTileIndex();
             foreach (var moveIndex in moves)
             {
                 var move = new Move(pawnTileIndex, moveIndex);
@@ -217,11 +217,8 @@ public class MoveTreeBuilder : MonoBehaviour
 
     private Move ChooseOptimalCPUMove()
     {
-        Debug.Log("Possible number of moves from this position: " + moveTree.Children.Count);
         int minimalScore = moveTree.Children.Min(move => move.Value.Score);
-        Debug.Log("Minimal score: " + minimalScore);
         var movesWithMinimalScore = moveTree.Children.Where(move => move.Value.Score == minimalScore).ToArray();
-        Debug.Log("Moves with minimal score: " + movesWithMinimalScore.Length);
         int moveIndex = Random.Range(0, movesWithMinimalScore.Length - 1);
         return movesWithMinimalScore[moveIndex].Value;
     }

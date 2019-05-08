@@ -6,12 +6,12 @@ public class PromotionChecker : MonoBehaviour
 
     private void Start()
     {
-        boardSize = GetComponent<TilesGenerator>().BoardSize;
+        boardSize = GetComponent<ITilesGenerator>().BoardSize;
     }
 
     public void CheckPromotion(GameObject pawnToCheck)
     {
-        var pawnProperties = pawnToCheck.GetComponent<PawnProperties>();
+        var pawnProperties = pawnToCheck.GetComponent<IPawnProperties>();
         if (pawnProperties.IsKing)
             return;
         var tileIndex = pawnProperties.GetTileIndex();
@@ -20,7 +20,7 @@ public class PromotionChecker : MonoBehaviour
             pawnProperties.PromoteToKing();
     }
 
-    private int GetPromotionRow(PawnProperties pawnProperties)
+    private int GetPromotionRow(IPawnProperties pawnProperties)
     {
         return pawnProperties.PawnColor == PawnColor.White ? boardSize - 1 : 0;
     }

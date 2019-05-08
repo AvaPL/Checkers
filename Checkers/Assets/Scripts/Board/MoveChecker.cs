@@ -12,14 +12,14 @@ public class MoveChecker : MonoBehaviour
 
     private void Awake()
     {
-        boardSize = GetComponent<TilesGenerator>().BoardSize;
+        boardSize = GetComponent<ITilesGenerator>().BoardSize;
         pawnMoveValidator = GetComponent<PawnMoveValidator>();
         tileGetter = GetComponent<TileGetter>();
     }
 
     private void Start()
     {
-        var pawnsProperties = GetComponentsInChildren<PawnProperties>();
+        var pawnsProperties = GetComponentsInChildren<IPawnProperties>();
         foreach (var element in pawnsProperties)
         {
             if (element.PawnColor == PawnColor.White)
@@ -71,7 +71,7 @@ public class MoveChecker : MonoBehaviour
 
     private TileIndex GetFirstTileIndexToCheck(TileIndex checkingDirectionInIndex)
     {
-        var firstTileIndexToCheck = pawnToCheck.GetComponent<PawnProperties>().GetTileIndex();
+        var firstTileIndexToCheck = pawnToCheck.GetComponent<IPawnProperties>().GetTileIndex();
         while (IsIndexValid(firstTileIndexToCheck - checkingDirectionInIndex))
         {
             firstTileIndexToCheck -= checkingDirectionInIndex;
@@ -104,7 +104,7 @@ public class MoveChecker : MonoBehaviour
 
     private bool HasNoncapturingMoveOnDiagonal(TileIndex checkingDirectionInIndex)
     {
-        var pawnTileIndex = pawnToCheck.GetComponent<PawnProperties>().GetTileIndex();
+        var pawnTileIndex = pawnToCheck.GetComponent<IPawnProperties>().GetTileIndex();
         var firstTileIndexToCheck = pawnTileIndex - checkingDirectionInIndex;
         if (IsIndexValid(firstTileIndexToCheck) && IsMoveValid(firstTileIndexToCheck))
             return true;

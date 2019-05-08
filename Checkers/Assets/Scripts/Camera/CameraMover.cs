@@ -19,7 +19,7 @@ public class CameraMover : MonoBehaviour
 
     private void Start()
     {
-        var tilesGenerator = Board.GetComponent<TilesGenerator>();
+        var tilesGenerator = Board.GetComponent<ITilesGenerator>();
         boardSize = tilesGenerator.BoardSize;
         SetInitialPosition();
         SetInitialRotation();

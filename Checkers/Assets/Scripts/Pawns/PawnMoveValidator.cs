@@ -31,7 +31,7 @@ public class PawnMoveValidator : MonoBehaviour
         pawn = pawnToCheck;
         targetTile = targetTileToCheck;
         targetTileIndex = targetTile.GetComponent<TileProperties>().GetTileIndex();
-        currentTileIndex = pawn.GetComponent<PawnProperties>().GetTileIndex();
+        currentTileIndex = pawn.GetComponent<IPawnProperties>().GetTileIndex();
         positionDifferenceInIndex = targetTileIndex - currentTileIndex;
     }
 
@@ -42,12 +42,12 @@ public class PawnMoveValidator : MonoBehaviour
 
     private bool IsPawnKing()
     {
-        return pawn.GetComponent<PawnProperties>().IsKing;
+        return pawn.GetComponent<IPawnProperties>().IsKing;
     }
 
     private int GetPawnRowMoveDirection()
     {
-        var pawnProperties = pawn.GetComponent<PawnProperties>();
+        var pawnProperties = pawn.GetComponent<IPawnProperties>();
         return pawnProperties.PawnColor == PawnColor.White ? 1 : -1;
     }
 
@@ -119,8 +119,8 @@ public class PawnMoveValidator : MonoBehaviour
 
     private bool IsPawnDifferentColorThanLastClickedPawn(GameObject pawnToCheck)
     {
-        return pawnToCheck.GetComponent<PawnProperties>().PawnColor !=
-               pawn.GetComponent<PawnProperties>().PawnColor;
+        return pawnToCheck.GetComponent<IPawnProperties>().PawnColor !=
+               pawn.GetComponent<IPawnProperties>().PawnColor;
     }
 
     public GameObject GetPawnToCapture()

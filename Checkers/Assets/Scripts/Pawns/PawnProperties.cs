@@ -1,16 +1,17 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class PawnProperties : MonoBehaviour
+public class PawnProperties : MonoBehaviour, IPawnProperties
 {
-    public PawnColor PawnColor;
-    public bool IsKing;
     public float CrownHeight;
     public float CrownAppearanceSmoothing;
     public float PositionDifferenceTolerance;
     public GameObject Crown;
     public GameObject PromotionParticles;
     public GameObject PawnSelection;
+
+    public PawnColor PawnColor { get; set; }
+    public bool IsKing { get; set; }
 
     private GameObject activePawnSelection;
 

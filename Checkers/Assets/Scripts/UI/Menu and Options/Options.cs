@@ -7,11 +7,13 @@ public class Options : MonoBehaviour
     public Slider BoardSizeSlider;
     public Slider PawnRowsSlider;
     public Slider DifficultySlider;
+    public Toggle DeterministicCPUModeToggle;
 
     private int volume = 100;
     private int boardSize = 8;
     private int pawnRows = 3;
     private int difficulty = 3;
+    private bool deterministicCPU = false;
 
     private void Awake()
     {
@@ -23,6 +25,8 @@ public class Options : MonoBehaviour
             pawnRows = PlayerPrefs.GetInt("PawnRows");
         if (PlayerPrefs.HasKey("Difficulty"))
             difficulty = PlayerPrefs.GetInt("Difficulty");
+        if (PlayerPrefs.HasKey("DeterministicCPU"))
+            deterministicCPU = PlayerPrefs.GetInt("DeterministicCPU") == 1;
     }
 
     private void Start()
@@ -31,20 +35,22 @@ public class Options : MonoBehaviour
         BoardSizeSlider.value = boardSize;
         PawnRowsSlider.value = pawnRows;
         DifficultySlider.value = difficulty;
+        DeterministicCPUModeToggle.isOn = deterministicCPU;
     }
 
     private void OnDisable()
     {
-        LoadSliderValues();
+        LoadValues();
         SavePlayerPrefs();
     }
 
-    private void LoadSliderValues()
+    private void LoadValues()
     {
         volume = Mathf.RoundToInt(VolumeSlider.value);
         boardSize = Mathf.RoundToInt(BoardSizeSlider.value);
         pawnRows = Mathf.RoundToInt(PawnRowsSlider.value);
         difficulty = Mathf.RoundToInt(DifficultySlider.value);
+        deterministicCPU = DeterministicCPUModeToggle.isOn;
     }
 
     private void SavePlayerPrefs()
@@ -53,5 +59,6 @@ public class Options : MonoBehaviour
         PlayerPrefs.SetInt("BoardSize", boardSize);
         PlayerPrefs.SetInt("PawnRows", pawnRows);
         PlayerPrefs.SetInt("Difficulty", difficulty);
+        PlayerPrefs.SetInt("DeterministicCPU", deterministicCPU ? 1 : 0);
     }
 }

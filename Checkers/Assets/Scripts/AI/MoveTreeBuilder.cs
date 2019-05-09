@@ -13,6 +13,7 @@ public class MoveTreeBuilder : MonoBehaviour
     private LinkedList<GameObject> blackPawns = new LinkedList<GameObject>();
     private int whitePawnsCount;
     private int blackPawnsCount;
+    private bool isCPUDeterministic;
 
     private void Awake()
     {
@@ -20,6 +21,7 @@ public class MoveTreeBuilder : MonoBehaviour
         aiPawnMover = GetComponent<AIPawnMover>();
         tileGetter = GetComponent<TileGetter>();
         moveTreeDepth = PlayerPrefs.GetInt("Difficulty");
+        isCPUDeterministic = PlayerPrefs.GetInt("DeterministicCPU") == 1;
     }
 
     private void Start()
@@ -106,9 +108,14 @@ public class MoveTreeBuilder : MonoBehaviour
             var moveTreeNode = treeNode.AddChild(move);
             AddMovesToTreeNode(moveTreeNode, depth - 1, alpha, beta);
             SetAlphaAndBeta(IsMoveByMaximizingPlayer(treeNode), moveTreeNode.Value.Score, ref alpha, ref beta);
-            if (beta < alpha)
+            if (ShouldBePruned(alpha, beta))
                 return;
         }
+    }
+
+    private bool ShouldBePruned(int alpha, int beta)
+    {
+        return isCPUDeterministic ? beta <= alpha : beta < alpha;
     }
 
     private GameObject GetPawnFromTreeNode(TreeNode<Move> treeNode)
@@ -137,7 +144,7 @@ public class MoveTreeBuilder : MonoBehaviour
                 var moveTreeNode = treeNode.AddChild(move);
                 AddMovesToTreeNode(moveTreeNode, depth - 1, alpha, beta);
                 SetAlphaAndBeta(IsMoveByMaximizingPlayer(treeNode), moveTreeNode.Value.Score, ref alpha, ref beta);
-                if (beta < alpha)
+                if (ShouldBePruned(alpha, beta))
                     return;
             }
         }
@@ -218,6 +225,19 @@ public class MoveTreeBuilder : MonoBehaviour
     private Move ChooseOptimalCPUMove()
     {
         int minimalScore = moveTree.Children.Min(move => move.Value.Score);
+        return isCPUDeterministic
+            ? ChooseOptimalDeterministicCpuMove(minimalScore)
+            : ChooseOptimalRandomizedCpuMove(minimalScore);
+    }
+
+    private Move ChooseOptimalDeterministicCpuMove(int minimalScore)
+    {
+        var moveWithMinimalScore = moveTree.Children.First(move => move.Value.Score == minimalScore);
+        return moveWithMinimalScore.Value;
+    }
+
+    private Move ChooseOptimalRandomizedCpuMove(int minimalScore)
+    {
         var movesWithMinimalScore = moveTree.Children.Where(move => move.Value.Score == minimalScore).ToArray();
         int moveIndex = Random.Range(0, movesWithMinimalScore.Length - 1);
         return movesWithMinimalScore[moveIndex].Value;

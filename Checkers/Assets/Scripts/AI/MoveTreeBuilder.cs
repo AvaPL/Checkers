@@ -4,11 +4,10 @@ using UnityEngine;
 
 public class MoveTreeBuilder : MonoBehaviour
 {
-    public int MoveTreeDepth;
-
     private MoveChecker moveChecker;
     private AIPawnMover aiPawnMover;
     private TileGetter tileGetter;
+    private int moveTreeDepth;
     private TreeNode<Move> moveTree;
     private LinkedList<GameObject> whitePawns = new LinkedList<GameObject>();
     private LinkedList<GameObject> blackPawns = new LinkedList<GameObject>();
@@ -20,6 +19,7 @@ public class MoveTreeBuilder : MonoBehaviour
         moveChecker = GetComponent<MoveChecker>();
         aiPawnMover = GetComponent<AIPawnMover>();
         tileGetter = GetComponent<TileGetter>();
+        moveTreeDepth = PlayerPrefs.GetInt("Difficulty");
     }
 
     private void Start()
@@ -55,7 +55,7 @@ public class MoveTreeBuilder : MonoBehaviour
     private void CreateMoveTree(Move initialMove)
     {
         moveTree = new TreeNode<Move>(initialMove);
-        AddMovesToTreeNode(moveTree, MoveTreeDepth, int.MinValue, int.MaxValue);
+        AddMovesToTreeNode(moveTree, moveTreeDepth, int.MinValue, int.MaxValue);
     }
 
     private void AddMovesToTreeNode(TreeNode<Move> treeNode, int depth, int alpha, int beta)

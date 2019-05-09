@@ -4,11 +4,10 @@ using UnityEngine;
 
 public class MoveTreeBuilder : MonoBehaviour
 {
-    public int MoveTreeDepth;
-
     private MoveChecker moveChecker;
     private AIPawnMover aiPawnMover;
     private TileGetter tileGetter;
+    private int moveTreeDepth;
     private TreeNode<Move> moveTree;
     private LinkedList<GameObject> whitePawns = new LinkedList<GameObject>();
     private LinkedList<GameObject> blackPawns = new LinkedList<GameObject>();
@@ -20,6 +19,7 @@ public class MoveTreeBuilder : MonoBehaviour
         moveChecker = GetComponent<MoveChecker>();
         aiPawnMover = GetComponent<AIPawnMover>();
         tileGetter = GetComponent<TileGetter>();
+        moveTreeDepth = PlayerPrefs.GetInt("Difficulty");
     }
 
     private void Start()
@@ -55,7 +55,7 @@ public class MoveTreeBuilder : MonoBehaviour
     private void CreateMoveTree(Move initialMove)
     {
         moveTree = new TreeNode<Move>(initialMove);
-        AddMovesToTreeNode(moveTree, MoveTreeDepth, int.MinValue, int.MaxValue);
+        AddMovesToTreeNode(moveTree, moveTreeDepth, int.MinValue, int.MaxValue);
     }
 
     private void AddMovesToTreeNode(TreeNode<Move> treeNode, int depth, int alpha, int beta)
@@ -98,7 +98,7 @@ public class MoveTreeBuilder : MonoBehaviour
     private void ContinueMulticapturingMove(TreeNode<Move> treeNode, int depth, int alpha, int beta)
     {
         GameObject pawn = GetPawnFromTreeNode(treeNode);
-        var capturingMoves = moveChecker.GetPawnCapturingMoves(pawn);
+        var capturingMoves = GetPawnCapturingMoves(pawn);
         TileIndex pawnTileIndex = pawn.GetComponent<IPawnProperties>().GetTileIndex();
         foreach (var moveIndex in capturingMoves)
         {
@@ -106,9 +106,15 @@ public class MoveTreeBuilder : MonoBehaviour
             var moveTreeNode = treeNode.AddChild(move);
             AddMovesToTreeNode(moveTreeNode, depth - 1, alpha, beta);
             SetAlphaAndBeta(IsMoveByMaximizingPlayer(treeNode), moveTreeNode.Value.Score, ref alpha, ref beta);
-            if (beta < alpha)
+            if (beta <= alpha)
                 return;
         }
+    }
+
+    private IEnumerable<TileIndex> GetPawnCapturingMoves(GameObject pawn)
+    {
+        var pawnCapturingMoves = moveChecker.GetPawnCapturingMoves(pawn);
+        return pawnCapturingMoves.OrderBy(element => Random.value);
     }
 
     private GameObject GetPawnFromTreeNode(TreeNode<Move> treeNode)
@@ -137,26 +143,28 @@ public class MoveTreeBuilder : MonoBehaviour
                 var moveTreeNode = treeNode.AddChild(move);
                 AddMovesToTreeNode(moveTreeNode, depth - 1, alpha, beta);
                 SetAlphaAndBeta(IsMoveByMaximizingPlayer(treeNode), moveTreeNode.Value.Score, ref alpha, ref beta);
-                if (beta < alpha)
+                if (beta <= alpha)
                     return;
             }
         }
     }
 
-    private LinkedList<GameObject> GetPawnsToCheck(TreeNode<Move> treeNode)
+    private IEnumerable<GameObject> GetPawnsToCheck(TreeNode<Move> treeNode)
     {
         GameObject pawn = GetPawnFromTreeNode(treeNode);
         PawnColor pawnColor = GetPawnColor(pawn);
-        return pawnColor == PawnColor.White ? blackPawns : whitePawns; //Opposite pawns should be checked.
+        var pawnsToCheck = pawnColor == PawnColor.White ? blackPawns : whitePawns; //Opposite pawns should be checked.
+        return pawnsToCheck.OrderBy(element => Random.value);
     }
 
-    private LinkedList<TileIndex> GetPawnMoves(GameObject pawn)
+    private IEnumerable<TileIndex> GetPawnMoves(GameObject pawn)
     {
         PawnColor pawnColorToCheck = GetPawnColor(pawn);
         bool pawnsHaveCapturingMove = moveChecker.PawnsHaveCapturingMove(pawnColorToCheck);
-        return pawnsHaveCapturingMove
+        var pawnMoves = pawnsHaveCapturingMove
             ? moveChecker.GetPawnCapturingMoves(pawn)
             : moveChecker.GetPawnNoncapturingMoves(pawn);
+        return pawnMoves.OrderBy(element => Random.value);
     }
 
     private void AssignMoveScore(TreeNode<Move> treeNode)
@@ -218,8 +226,8 @@ public class MoveTreeBuilder : MonoBehaviour
     private Move ChooseOptimalCPUMove()
     {
         int minimalScore = moveTree.Children.Min(move => move.Value.Score);
-        var movesWithMinimalScore = moveTree.Children.Where(move => move.Value.Score == minimalScore).ToArray();
-        int moveIndex = Random.Range(0, movesWithMinimalScore.Length - 1);
-        return movesWithMinimalScore[moveIndex].Value;
+        Debug.Log("Minimal score: " + minimalScore);
+        var moveWithMinimalScore = moveTree.Children.First(move => move.Value.Score == minimalScore);
+        return moveWithMinimalScore.Value;
     }
 }

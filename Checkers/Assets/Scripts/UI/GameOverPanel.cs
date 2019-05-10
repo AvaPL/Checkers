@@ -6,6 +6,7 @@ public class GameOverPanel : MonoBehaviour
 {
     public GameObject Board;
     public TextMeshProUGUI WinnerText;
+    public GameAudio GameAudio;
 
     private Animator gameOverPanelAnimator;
 
@@ -32,6 +33,11 @@ public class GameOverPanel : MonoBehaviour
     public void LoadMenuScene()
     {
         SceneManager.LoadScene("Menu", LoadSceneMode.Single);
+    }
+
+    public void FadeGameMusic()
+    {
+        GameAudio.FadeGameMusic();
     }
 
     public void ExitGame()

@@ -226,7 +226,6 @@ public class MoveTreeBuilder : MonoBehaviour
     private Move ChooseOptimalCPUMove()
     {
         int minimalScore = moveTree.Children.Min(move => move.Value.Score);
-        Debug.Log("Minimal score: " + minimalScore);
         var moveWithMinimalScore = moveTree.Children.First(move => move.Value.Score == minimalScore);
         return moveWithMinimalScore.Value;
     }

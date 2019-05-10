@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class PawnMover : MonoBehaviour
 {
+    public GameAudio GameAudio;
     public float HorizontalMovementSmoothing;
     public float VerticalMovementSmoothing;
     public float PositionDifferenceTolerance;
@@ -51,6 +52,7 @@ public class PawnMover : MonoBehaviour
             UnselectPawn();
         lastClickedPawn = pawn;
         AddPawnSelection();
+        GameAudio.PlayButtonClickSound();
     }
 
     private void AddPawnSelection()
@@ -62,6 +64,7 @@ public class PawnMover : MonoBehaviour
     {
         RemoveLastClickedPawnSelection();
         lastClickedPawn = null;
+        GameAudio.PlayButtonClickSound();
     }
 
     private void RemoveLastClickedPawnSelection()
@@ -131,6 +134,7 @@ public class PawnMover : MonoBehaviour
         promotionChecker.CheckPromotion(lastClickedPawn);
         isPawnMoving = false;
         EndTurn();
+        GameAudio.PlayPawnSound();
     }
 
     private void EndTurn()
@@ -173,6 +177,7 @@ public class PawnMover : MonoBehaviour
         promotionChecker.CheckPromotion(lastClickedPawn);
         isPawnMoving = false;
         MulticaptureOrEndTurn();
+        GameAudio.PlayPawnSound();
     }
 
     private IEnumerator DoCaptureMovement()

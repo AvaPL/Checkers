@@ -7,7 +7,7 @@ public class MoveTreeBuilder : MonoBehaviour
     private MoveChecker moveChecker;
     private AIPawnMover aiPawnMover;
     private TileGetter tileGetter;
-    private int moveTreeDepth;
+    private int moveTreeDepth = 3;
     private TreeNode<Move> moveTree;
     private LinkedList<GameObject> whitePawns = new LinkedList<GameObject>();
     private LinkedList<GameObject> blackPawns = new LinkedList<GameObject>();
@@ -19,7 +19,8 @@ public class MoveTreeBuilder : MonoBehaviour
         moveChecker = GetComponent<MoveChecker>();
         aiPawnMover = GetComponent<AIPawnMover>();
         tileGetter = GetComponent<TileGetter>();
-        moveTreeDepth = PlayerPrefs.GetInt("Difficulty");
+        if (PlayerPrefs.HasKey("Difficulty"))
+            moveTreeDepth = PlayerPrefs.GetInt("Difficulty");
     }
 
     private void Start()

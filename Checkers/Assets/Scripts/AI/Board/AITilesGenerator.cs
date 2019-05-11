@@ -2,7 +2,7 @@
 
 public class AITilesGenerator : MonoBehaviour, ITilesGenerator
 {
-    public int BoardSize { get; private set; }
+    public int BoardSize { get; private set; } = 8;
     public GameObject Tile;
 
     private void Start()
@@ -13,7 +13,8 @@ public class AITilesGenerator : MonoBehaviour, ITilesGenerator
 
     private void Awake()
     {
-        BoardSize = PlayerPrefs.GetInt("BoardSize");
+        if (PlayerPrefs.HasKey("BoardSize"))
+            BoardSize = PlayerPrefs.GetInt("BoardSize");
     }
 
     private void CreateTileColumns()

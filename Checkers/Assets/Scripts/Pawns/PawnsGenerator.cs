@@ -2,7 +2,7 @@
 
 public class PawnsGenerator : MonoBehaviour
 {
-    public int PawnRows { get; private set; }
+    public int PawnRows { get; private set; } = 3;
     public GameObject Pawn;
     public Material WhiteMaterial;
     public Material BlackMaterial;
@@ -14,7 +14,8 @@ public class PawnsGenerator : MonoBehaviour
     {
         tileGetter = GetComponent<TileGetter>();
         boardSize = GetComponent<ITilesGenerator>().BoardSize;
-        PawnRows = PlayerPrefs.GetInt("PawnRows");
+        if (PlayerPrefs.HasKey("PawnRows"))
+            PawnRows = PlayerPrefs.GetInt("PawnRows");
     }
 
     private void Start()

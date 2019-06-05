@@ -13,4 +13,4 @@ Simple Checkers game in Unity.
 * [Unity3D](https://unity3d.com/) - game engine
 
 ## Screenshots
-<img src="Screenshoths/Menu.png" width="480"> <img src="Screenshoths/Board.png" width="480"> <img src="Screenshoths/BigBoard.png" width="480"> <img src="Screenshoths/Promotion.png" width="480">
+<img src="Screenshots/Menu.png" width="480"> <img src="Screenshots/Board.png" width="480"> <img src="Screenshots/BigBoard.png" width="480"> <img src="Screenshots/Promotion.png" width="480">

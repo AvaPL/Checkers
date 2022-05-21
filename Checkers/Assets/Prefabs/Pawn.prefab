@@ -195,12 +195,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: beb018fdfe0e8d54097718fb0ffd9498, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PawnColor: 0
-  IsKing: 0
   CrownHeight: 0.4
   CrownAppearanceSmoothing: 5
   PositionDifferenceTolerance: 0.01
-  Crown: {fileID: 1534303541487452323, guid: 2489dd16575ee0741a1e7e32886a283f, type: 3}
+  Crown: {fileID: 3246049399796633620, guid: 2489dd16575ee0741a1e7e32886a283f, type: 3}
   PromotionParticles: {fileID: 2816544923751914441, guid: 7342a11b65baa0346a1133b3bf406709,
     type: 3}
   PawnSelection: {fileID: 8418305190555947777, guid: 28e53d17c72331b4f8d05bc9156ca239,
